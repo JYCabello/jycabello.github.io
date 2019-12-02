@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title> - Articles</title>
+    <description>A sneak peek into my brain.</description>
+    <link>
+    https://jycabello.github.io</link>
+    
+      
+      <item>
+        <title>Getting it through</title>
+        
+          <description>&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 02 Dec 2019 20:12:13 +0100</pubDate>
+        <link>
+        https://jycabello.github.io/welcome-to-jekyll</link>
+        <guid isPermaLink="true">https://jycabello.github.io/welcome-to-jekyll</guid>
+      </item>
+      
+    
+  </channel>
+</rss>
