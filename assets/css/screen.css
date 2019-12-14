@@ -436,9 +436,13 @@ The knock-on effect of this is ugly browser-scroll bars at the bottom, so 80px o
     background: var(--darkpurple);
     margin-bottom: 8px;
     font-family: 'Noto Sans', sans-serif;
-    color: var(--whitegrey);
+    color: var(--black);
     font-size: 13px;
     font-weight: 500;
+}
+
+.post-card-tags:hover {
+    background: var(--darkgreen);
 }
 
 .post-card-title {
@@ -735,6 +739,7 @@ The first (most recent) post in the list is styled to be bigger than the others 
     transition-property: text-decoration-color, text-decoration-thickness, text-decoration-width;
     box-sizing: border-box;
     text-decoration: underline;
+    text-decoration-color: var(--green);
     vertical-align: baseline;
     margin: 0;
     padding: 0;
@@ -815,7 +820,7 @@ Usage (In Ghost editor):
 .post-full-content blockquote {
     margin: 0 0 1.5em;
     padding: 0 1.5em;
-    border-left: #3eb0ef 3px solid;
+    border-left: var(--darkgreen) 3px solid;
 }
 
 .post-full-content blockquote p {

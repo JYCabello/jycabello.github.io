@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator>
   <link href="https://jycabello.github.io/author/yeray/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://jycabello.github.io/" rel="alternate" type="text/html" />
-  <updated>2019-12-12T21:18:41+00:00</updated>
+  <updated>2019-12-14T13:34:48+00:00</updated>
   <id>https://jycabello.github.io/author/yeray/feed.xml</id>
 
   
@@ -59,7 +59,7 @@ of his blog.&lt;/p&gt;
 &lt;p&gt;Even worse, if you go to the &lt;a href=&quot;https://github.com/jekyller/jasper2&quot;&gt;Jasper2&lt;/a&gt; site, you’ll find that it has a configuration by default to build with
 &lt;a href=&quot;https://travis-ci.com/&quot;&gt;Travis&lt;/a&gt;, but Github actions just got released and I just couldn’t resist.&lt;/p&gt;
 
-&lt;h4 id=&quot;enough-introduction-lets-get-to-the-main-course&quot;&gt;Enough introduction, let’s get to the main course&lt;/h4&gt;
+&lt;h4 id=&quot;enough-appetizers-lets-get-to-the-main-course&quot;&gt;Enough appetizers, let’s get to the main course&lt;/h4&gt;
 
 &lt;p&gt;&lt;em&gt;You can always find the latest version of this pipeline in the &lt;a href=&quot;https://github.com/JYCabello/jycabello-jekyll&quot;&gt;source repository&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 
