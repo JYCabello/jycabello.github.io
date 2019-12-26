@@ -8,6 +8,25 @@
     
       
       <item>
+        <title>Plunder with thunder</title>
+        
+          <description>&lt;p&gt;I work in an industry where knowledge is, most of the time, valued over diplomas and certifications, so it has been relatively
+easy to thrive without a degree.
+That does not mean that I haven’t received my fair share of “you have to be an actual engineer” and “I don’t think you are qualified to do that”.
+I did have the option to finish my computer science studies, but as I was already working in the industry I found myself with less and less time
+to study and had to make a decision. I ended up quitting my studies to… have time to learn.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 15 Dec 2019 19:12:13 +0000</pubDate>
+        <link>
+        https://jycabello.github.io/plunder-with-thunder</link>
+        <guid isPermaLink="true">https://jycabello.github.io/plunder-with-thunder</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Pushing to a repository in github actions</title>
         
           <description>&lt;p&gt;The very first article of this blog is about the blog itself, specifically about its release pipeline. So, to get in sync with the problem at hand, let’s take a
@@ -15,7 +34,7 @@ trip around the nature of the blog.&lt;/p&gt;
 
 </description>
         
-        <pubDate>Mon, 09 Dec 2019 19:12:13 +0000</pubDate>
+        <pubDate>Wed, 11 Dec 2019 19:12:13 +0000</pubDate>
         <link>
         https://jycabello.github.io/pushing-to-a-github-repo-in-github-actions</link>
         <guid isPermaLink="true">https://jycabello.github.io/pushing-to-a-github-repo-in-github-actions</guid>

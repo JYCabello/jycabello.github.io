@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator>
   <link href="https://jycabello.github.io/tag/basic/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://jycabello.github.io/" rel="alternate" type="text/html" />
-  <updated>2019-12-14T13:48:17+00:00</updated>
+  <updated>2019-12-26T15:02:37+00:00</updated>
   <id>https://jycabello.github.io/tag/basic/feed.xml</id>
 
   
@@ -34,8 +34,8 @@
     <entry>
       <title type="html">Pushing to a repository in github actions</title>
       <link href="https://jycabello.github.io/pushing-to-a-github-repo-in-github-actions" rel="alternate" type="text/html" title="Pushing to a repository in github actions" />
-      <published>2019-12-09T19:12:13+00:00</published>
-      <updated>2019-12-09T19:12:13+00:00</updated>
+      <published>2019-12-11T19:12:13+00:00</published>
+      <updated>2019-12-11T19:12:13+00:00</updated>
       <id>https://jycabello.github.io/pushing-to-a-github-repo-in-github-actions</id>
       <content type="html" xml:base="https://jycabello.github.io/pushing-to-a-github-repo-in-github-actions">&lt;p&gt;The very first article of this blog is about the blog itself, specifically about its release pipeline. So, to get in sync with the problem at hand, let’s take a
 trip around the nature of the blog.&lt;/p&gt;
@@ -97,7 +97,7 @@ a few self-explaining steps to build the static site:&lt;/p&gt;
       &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/cache@v1&lt;/span&gt;
       &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
         &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;vendor/bundle&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;$-gem-$&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ runner.os }}-gem-${{ hashFiles(&quot;**/Gemfile.lock&quot;) }}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
