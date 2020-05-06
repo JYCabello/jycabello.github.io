@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator>
   <link href="https://jycabello.github.io/tag/meta/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://jycabello.github.io/" rel="alternate" type="text/html" />
-  <updated>2020-05-06T08:08:07+00:00</updated>
+  <updated>2020-05-06T08:16:47+00:00</updated>
   <id>https://jycabello.github.io/tag/meta/feed.xml</id>
 
   
@@ -155,10 +155,10 @@ copy the built static site, make a commit and push it back.&lt;/p&gt;
         &lt;span class=&quot;na&quot;&gt;skip-checks&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;true&lt;/span&gt;
       &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
         &lt;span class=&quot;s&quot;&gt;git config --global user.email &quot;YOUR_EMAIL_ADDRESS&quot;&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;git config --global user.name &quot;YOUR_USER_NAME&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;git config --global user.name &quot;YOUR_USER_NAME_FOR_THE_TARGET_REPO&quot;&lt;/span&gt;
         &lt;span class=&quot;s&quot;&gt;cd ${HOME}&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;git clone https://x-access-token:${GITHUB_TOKEN}@github.com/JYCabello/jycabello.github.io.git&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;cd jycabello.github.io&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;git clone https://x-access-token:${GITHUB_TOKEN}@github.com/YOUR_USER_NAME_FOR_THE_TARGET_REPO/MY_PAGE_NAME.github.io.git&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;cd MY_PAGE_NAME.github.io&lt;/span&gt;
         &lt;span class=&quot;s&quot;&gt;git checkout master&lt;/span&gt;
         &lt;span class=&quot;s&quot;&gt;rm -r *&lt;/span&gt;
         &lt;span class=&quot;s&quot;&gt;cp -rf ${GITHUB_WORKSPACE}/_site/* .&lt;/span&gt;
