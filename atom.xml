@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Flat map tuple - functional patterns</title>
+        
+          <description>&lt;p&gt;One of the fantastic things about functional programming is that you abstract away the path that took you to the data, mostly with data structures. So when you are processing the &lt;code class=&quot;highlighter-rouge&quot;&gt;some&lt;/code&gt; state of an &lt;code class=&quot;highlighter-rouge&quot;&gt;Option&lt;/code&gt;, you know that the object is there. When processing the &lt;code class=&quot;highlighter-rouge&quot;&gt;right&lt;/code&gt; of an &lt;code class=&quot;highlighter-rouge&quot;&gt;Either&lt;/code&gt;, you know you have an object that has dodged every error or alternative path. You don’t get his benefit for free, as the data structure forces you to handle all of its states, you might see yourself needing three objects, all of them contained in their own instance of such a structure.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Wed, 04 Nov 2020 10:31:13 +0000</pubDate>
+        <link>
+        https://jycabello.github.io/flat-map-tuple</link>
+        <guid isPermaLink="true">https://jycabello.github.io/flat-map-tuple</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Plunder with thunder</title>
         
           <description>&lt;p&gt;I work in an industry where knowledge is, most of the time, valued over diplomas and certifications, so it has been relatively
