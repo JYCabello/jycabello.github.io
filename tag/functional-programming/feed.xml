@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator>
   <link href="https://jycabello.github.io/tag/functional-programming/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://jycabello.github.io/" rel="alternate" type="text/html" />
-  <updated>2020-11-04T14:45:02+00:00</updated>
+  <updated>2020-11-04T19:22:37+00:00</updated>
   <id>https://jycabello.github.io/tag/functional-programming/feed.xml</id>
 
   
@@ -39,13 +39,17 @@
       <id>https://jycabello.github.io/flat-map-tuple</id>
       <content type="html" xml:base="https://jycabello.github.io/flat-map-tuple">&lt;p&gt;One of the fantastic things about functional programming is that you abstract away the path that took you to the data, mostly with data structures. So when you are processing the &lt;code class=&quot;highlighter-rouge&quot;&gt;some&lt;/code&gt; state of an &lt;code class=&quot;highlighter-rouge&quot;&gt;Option&lt;/code&gt;, you know that the object is there. When processing the &lt;code class=&quot;highlighter-rouge&quot;&gt;right&lt;/code&gt; of an &lt;code class=&quot;highlighter-rouge&quot;&gt;Either&lt;/code&gt;, you know you have an object that has dodged every error or alternative path. You don’t get his benefit for free, as the data structure forces you to handle all of its states, you might see yourself needing three objects, all of them contained in their own instance of such a structure.&lt;/p&gt;
 
-&lt;p&gt;I’ll follow the process that got me here.&lt;/p&gt;
+&lt;h6 id=&quot;what-this-is-truly-about&quot;&gt;What this is truly about&lt;/h6&gt;
+
+&lt;p&gt;The pattern I’m sharing here might only be useful to you if you’ve faced the same problem as me, considered it worth solving and ultimately arrived to a solution that didn’t completely click with you. The intended value of this article is to share the almost-random chain of seemingly-disconnected events that is my train of thought operating to solve a problem.&lt;/p&gt;
 
 &lt;p&gt;For the examples, I’ll go with the &lt;code class=&quot;highlighter-rouge&quot;&gt;Either&lt;/code&gt; monad and use for C#, &lt;a href=&quot;https://github.com/louthy/language-ext&quot;&gt;Language-ext&lt;/a&gt; and for Kotlin, &lt;a href=&quot;https://arrow-kt.io/&quot;&gt;Arrow&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;So, let’s say we have a insurance system and we want to print a table with the policies that a certain customer has and for that we first need the user details and the customer profile.&lt;/p&gt;
+&lt;p&gt;So, let’s say we have a insurance system and we want to print a table with the policies that a certain customer has and for that we first need the user details and the customer profile. That’s our business problem. Thing is, it’s never only business, we have all of these pesky issues that pop up along the way: Security, faulty connections, invalid data… Incidental complexity that usually lead to a cascade of conditionals to handle every flow distinct from our beloved happy path.&lt;/p&gt;
 
-&lt;p&gt;These would be the functions getting us the values and the one consuming it.&lt;/p&gt;
+&lt;p&gt;So, functional we go, we take the railway approach and model all of our exit(us) conditions in an &lt;code class=&quot;highlighter-rouge&quot;&gt;Error&lt;/code&gt; class, put it on the left and hope for the best.&lt;/p&gt;
+
+&lt;p&gt;These would be the functions getting us the values and the one consuming it (ignore that they cannot fail, if you please).&lt;/p&gt;
 
 &lt;div class=&quot;language-cs highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Either&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;GetUser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
@@ -87,7 +91,7 @@
 
 &lt;p&gt;As you can see, every piece of logic just takes the objects, taking for granted that they are in a valid states an that the program is in a portion of its state that has the objects there.&lt;/p&gt;
 
-&lt;p&gt;And I know, the C# bit looks like it got hit in the face by an old boxing champion trying to prove that he still “has it”. The syntax is not the reason I like the language. Strap yourselves, though, it gets worse when it’s time to actually consume this logic.&lt;/p&gt;
+&lt;p&gt;There’s one little annoyance, though. The &lt;code class=&quot;highlighter-rouge&quot;&gt;print&lt;/code&gt; overload for the success path takes an &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt;, a &lt;code class=&quot;highlighter-rouge&quot;&gt;CustomerProfile&lt;/code&gt; and a list of &lt;code class=&quot;highlighter-rouge&quot;&gt;Policy&lt;/code&gt; and what we got are three &lt;code class=&quot;highlighter-rouge&quot;&gt;Either&lt;/code&gt;s which sets us up for some mild annoyance.&lt;/p&gt;
 
 &lt;p&gt;Now onto the ugliness of actually consuming this for user number one:&lt;/p&gt;
 
@@ -113,7 +117,7 @@
         &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fold&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;identity&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;em&gt;Yikes!&lt;/em&gt; The Kotlin alternative is definitely cleaner but it’s still a proper christmast tree of nested, hard to follow and harder to debug code. Arrow offers us a clean alternative to this, using an &lt;code class=&quot;highlighter-rouge&quot;&gt;fx&lt;/code&gt; block:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Yikes!&lt;/em&gt; The Kotlin alternative is definitely cleaner but it’s still a proper christmas tree of nested, hard to follow and harder to debug code. Arrow offers us a clean alternative to this, using an &lt;code class=&quot;highlighter-rouge&quot;&gt;fx&lt;/code&gt; block:&lt;/p&gt;
 
 &lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;printFx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Unit&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;
     &lt;span class=&quot;nc&quot;&gt;Either&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Unit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
