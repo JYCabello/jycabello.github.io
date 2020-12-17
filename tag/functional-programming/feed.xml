@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator>
   <link href="https://jycabello.github.io/tag/functional-programming/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://jycabello.github.io/" rel="alternate" type="text/html" />
-  <updated>2020-12-12T03:14:18+00:00</updated>
+  <updated>2020-12-17T09:18:29+00:00</updated>
   <id>https://jycabello.github.io/tag/functional-programming/feed.xml</id>
 
   
@@ -37,7 +37,7 @@
       <published>2020-11-04T10:31:13+00:00</published>
       <updated>2020-11-04T10:31:13+00:00</updated>
       <id>https://jycabello.github.io/flat-map-tuple</id>
-      <content type="html" xml:base="https://jycabello.github.io/flat-map-tuple">&lt;p&gt;One of the fantastic things about functional programming is that you abstract away the path that took you to the data, mostly with data structures. So when you are processing the &lt;code class=&quot;highlighter-rouge&quot;&gt;some&lt;/code&gt; state of an &lt;code class=&quot;highlighter-rouge&quot;&gt;Option&lt;/code&gt;, you know that the object is there. When processing the &lt;code class=&quot;highlighter-rouge&quot;&gt;right&lt;/code&gt; of an &lt;code class=&quot;highlighter-rouge&quot;&gt;Either&lt;/code&gt;, you know you have an object that has dodged every error or alternative path. You don’t get his benefit for free, as the data structure forces you to handle all of its states, you might see yourself needing three objects, all of them contained in their own instance of such a structure.&lt;/p&gt;
+      <content type="html" xml:base="https://jycabello.github.io/flat-map-tuple">&lt;p&gt;One of the fantastic things about functional programming is that you &lt;strong&gt;have to&lt;/strong&gt; abstract away the path that took you to the data, mostly with data structures. So when you are processing the &lt;code class=&quot;highlighter-rouge&quot;&gt;some&lt;/code&gt; state of an &lt;code class=&quot;highlighter-rouge&quot;&gt;Option&lt;/code&gt;, you know that the object is there. When processing the &lt;code class=&quot;highlighter-rouge&quot;&gt;right&lt;/code&gt; of an &lt;code class=&quot;highlighter-rouge&quot;&gt;Either&lt;/code&gt;, you know you have an object that has dodged every error or alternative path. You don’t get his benefit for free, as the data structure forces you to handle all of its states, you might see yourself needing three objects, all of them contained in their own instance of such a structure.&lt;/p&gt;
 
 &lt;h6 id=&quot;what-this-is-truly-about&quot;&gt;What this is truly about&lt;/h6&gt;
 
@@ -225,7 +225,7 @@
       
 
       
-        <summary type="html">One of the fantastic things about functional programming is that you abstract away the path that took you to the data, mostly with data structures. So when you are processing the some state of an Option, you know that the object is there. When processing the right of an Either, you know you have an object that has dodged every error or alternative path. You don’t get his benefit for free, as the data structure forces you to handle all of its states, you might see yourself needing three objects, all of them contained in their own instance of such a structure.</summary>
+        <summary type="html">One of the fantastic things about functional programming is that you have to abstract away the path that took you to the data, mostly with data structures. So when you are processing the some state of an Option, you know that the object is there. When processing the right of an Either, you know you have an object that has dodged every error or alternative path. You don’t get his benefit for free, as the data structure forces you to handle all of its states, you might see yourself needing three objects, all of them contained in their own instance of such a structure.</summary>
       
 
       
