@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Many-to-many relationships in Entity Framework Core 5 and 3</title>
+        
+          <description>&lt;p&gt;Scenario is quite simple, you got two tables and you have to stablish a relation between both. Be it fruit baskets and basket makers. One maker can make many baskets and they can also collaborate, having a basket be made by different people.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Wed, 16 Dec 2020 10:00:00 +0000</pubDate>
+        <link>
+        https://jycabello.github.io/efcore_many_to_many_relations</link>
+        <guid isPermaLink="true">https://jycabello.github.io/efcore_many_to_many_relations</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Doing non-breaking migrations in Entity Framework Core</title>
         
           <description>&lt;p&gt;So, you’re using an Object Relational Mapper of any kind and you have to, let’s say, remove a field from one of your models. This is a breaking change, as your contract with the database is going to break. If you have a small project that you can just take down for every release, that’s not a big deal, but:&lt;/p&gt;

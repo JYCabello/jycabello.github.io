@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>Many-to-many relationships in Entity Framework Core 5 and 3</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+
+    <link href="https://fonts.googleapis.com/css?family=Fira+Code:500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans&display=swap" rel="stylesheet">
+
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    <meta name="description" content="I'm not that clever, I don't know that much." />
+    <link rel="shortcut icon" href="https://jycabello.github.io/assets/images/favicon.png" type="image/png" />
+    <link rel="canonical" href="https://jycabello.github.io/efcore_many_to_many_relations" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="🖋 Yeray Cabello 🏴‍☠️" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Many-to-many relationships in Entity Framework Core 5 and 3" />
+    <meta property="og:description" content="I'm not that clever, I don't know that much." />
+    <meta property="og:url" content="https://jycabello.github.io/efcore_many_to_many_relations" />
+    <meta property="og:image" content="https://jycabello.github.io/assets/images/sebastien-goldberg-unsplash.jpg" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:tag" content="Dot-net" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Many-to-many relationships in Entity Framework Core 5 and 3" />
+    <meta name="twitter:description" content="I'm not that clever, I don't know that much." />
+    <meta name="twitter:url" content="https://jycabello.github.io/" />
+    <meta name="twitter:image" content="https://jycabello.github.io/assets/images/sebastien-goldberg-unsplash.jpg" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="🖋 Yeray Cabello 🏴‍☠️" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Dot-net" />
+    <meta name="twitter:site" content="@jycabello" />
+    <meta name="twitter:creator" content="@jycabello" />
+    <meta property="og:image:width" content="2000" />
+    <meta property="og:image:height" content="666" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "🖋 Yeray Cabello 🏴‍☠️",
+        "logo": "https://jycabello.github.io/"
+    },
+    "url": "https://jycabello.github.io/efcore_many_to_many_relations",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://jycabello.github.io/assets/images/sebastien-goldberg-unsplash.jpg",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://jycabello.github.io/efcore_many_to_many_relations"
+    },
+    "description": "I'm not that clever, I don't know that much."
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="Many-to-many relationships in Entity Framework Core 5 and 3" href="/feed.xml" />
+
+    <style>
+        .highlighter-rouge, .highlight, code {
+            width: 100%;
+        }
+    </style>
+
+
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+        
+        <a class="site-nav-logo" href="https://jycabello.github.io/">🖋 Yeray Cabello 🏴‍☠️</a>
+        
+        
+        
+        <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem"><a href="/about/">About</a></li>
+</ul>
+
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            <a class="social-link social-link-tw" href="https://twitter.com/jycabello" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+</a>
+            
+            
+            <a class="social-link social-link-li" href="https://www.linkedin.com/in/jycabello" target="_blank" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/></svg>
+
+            </a>
+            
+        </div>
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  ">
+
+            <header class="post-full-header">
+              <section class="post-full-meta">
+                  <time class="post-full-meta-date" datetime="16 December 2020">16 December 2020</time>
+              </section>
+
+              
+                  
+                      <span class="post-card-tags"><a style="color:white;" href='/tag/dot-net/'>Dot-net</a></span>
+                  
+                      <span class="post-card-tags"><a style="color:white;" href='/tag/basic/'>Basic</a></span>
+                  
+              
+
+                <h1 class="post-full-title">Many-to-many relationships in Entity Framework Core 5 and 3</h1>
+            </header>
+
+            
+            <figure class="post-full-image" style="background-image: url(/assets/images/sebastien-goldberg-unsplash.jpg)">
+            </figure>
+            
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>Scenario is quite simple, you got two tables and you have to stablish a relation between both. Be it fruit baskets and basket makers. One maker can make many baskets and they can also collaborate, having a basket be made by different people.</p>
+
+<p>In raw SQL we do that with an intermediate table that represents the connection between both, an likewise we will do the same in Entity Framework Core, with some helpful additional abstraction in version 5.</p>
+
+<p><em>I will obviate nullability in the examples, to avoid distractions when it comes to defaulting or null management. Also, the entities have no fields beyond their ID.</em></p>
+
+<p>Hands on, this is what we will end up having in our SQL schema.</p>
+
+<ul>
+  <li>A table called <code class="highlighter-rouge">FruitBaskets</code>.</li>
+  <li>Another table called <code class="highlighter-rouge">BasketMakers</code>.</li>
+  <li>An intermediate table calle <code class="highlighter-rouge">FruitBasketBasketMaker</code> or <code class="highlighter-rouge">BasketMakerFruitBasket</code> (doesn’t really matter which, we’ll go with the latter).</li>
+</ul>
+
+<p>These are the entities:</p>
+
+<div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">BasketMaker</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">ID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">FruitBasket</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">ID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="entity-framework-3">Entity Framework 3</h2>
+
+<p>Without support to abstract many-to-many relations away, we have to manually add an intermediate entity that will handle the relation, that would be:</p>
+
+<div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">BasketMakerFruitBasket</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="n">BasketMaker</span> <span class="n">BasketMaker</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">BasketMakersID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="n">FruitBasket</span> <span class="n">FruitBasket</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">FruitBasketsID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Also, the relation has to be made explicit in the entities themselves:</p>
+
+<div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">BasketMaker</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">ID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="n">ICollection</span><span class="p">&lt;</span><span class="n">BasketMakerFruitBasket</span><span class="p">&gt;</span> <span class="n">BasketMakerFruitBaskets</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">FruitBasket</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">ID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="n">ICollection</span><span class="p">&lt;</span><span class="n">BasketMakerFruitBasket</span><span class="p">&gt;</span> <span class="n">BasketMakerFruitBaskets</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>One would think that that’s enough, but we really need to make the DBContext aware of it, too:</p>
+
+<div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">FruitsDbContext</span> <span class="p">:</span> <span class="n">DbContext</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">const</span> <span class="kt">string</span> <span class="n">ConnectionString</span> <span class="p">=</span>
+        <span class="s">"Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Fruits;Integrated Security=True"</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="n">DbSet</span><span class="p">&lt;</span><span class="n">FruitBasket</span><span class="p">&gt;</span> <span class="n">FruitBaskets</span> <span class="p">=&gt;</span>
+        <span class="n">Set</span><span class="p">&lt;</span><span class="n">FruitBasket</span><span class="p">&gt;();</span>
+
+    <span class="k">public</span> <span class="n">DbSet</span><span class="p">&lt;</span><span class="n">BasketMakerFruitBasket</span><span class="p">&gt;</span> <span class="n">BasketMakerFruitBasket</span> <span class="p">=&gt;</span>
+        <span class="n">Set</span><span class="p">&lt;</span><span class="n">BasketMakerFruitBasket</span><span class="p">&gt;();</span>
+
+    <span class="k">public</span> <span class="n">DbSet</span><span class="p">&lt;</span><span class="n">BasketMaker</span><span class="p">&gt;</span> <span class="n">BasketMakers</span> <span class="p">=&gt;</span>
+        <span class="n">Set</span><span class="p">&lt;</span><span class="n">BasketMaker</span><span class="p">&gt;();</span>
+
+    <span class="c1">// This is the bit you're looking for:</span>
+    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnModelCreating</span><span class="p">(</span><span class="n">ModelBuilder</span> <span class="n">modelBuilder</span><span class="p">)</span> <span class="p">=&gt;</span>
+        <span class="n">modelBuilder</span><span class="p">.</span><span class="n">Entity</span><span class="p">&lt;</span><span class="n">BasketMakerFruitBasket</span><span class="p">&gt;(</span><span class="n">entity</span> <span class="p">=&gt;</span>
+            <span class="p">{</span>
+                <span class="c1">// A combined key, made of the other two entities' keys.</span>
+                <span class="n">entity</span><span class="p">.</span><span class="nf">HasKey</span><span class="p">(</span><span class="n">oc</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="p">{</span> <span class="n">BasketMakersID</span><span class="p">,</span> <span class="n">FruitBasketsID</span> <span class="p">});</span>
+                <span class="c1">// The reference to the basket maker.</span>
+                <span class="n">entity</span><span class="p">.</span><span class="n">HasOne</span><span class="p">&lt;</span><span class="n">BasketMaker</span><span class="p">&gt;(</span><span class="n">oc</span> <span class="p">=&gt;</span> <span class="n">oc</span><span class="p">.</span><span class="n">BasketMaker</span><span class="p">)</span>
+                    <span class="p">.</span><span class="nf">WithMany</span><span class="p">()</span>
+                    <span class="p">.</span><span class="nf">OnDelete</span><span class="p">(</span><span class="n">DeleteBehavior</span><span class="p">.</span><span class="n">NoAction</span><span class="p">);</span>
+                <span class="c1">// The reference to the basket itself.</span>
+                <span class="n">entity</span><span class="p">.</span><span class="n">HasOne</span><span class="p">&lt;</span><span class="n">FruitBasket</span><span class="p">&gt;(</span><span class="n">oc</span> <span class="p">=&gt;</span> <span class="n">oc</span><span class="p">.</span><span class="n">FruitBasket</span><span class="p">)</span>
+                    <span class="p">.</span><span class="nf">WithMany</span><span class="p">()</span>
+                    <span class="p">.</span><span class="nf">OnDelete</span><span class="p">(</span><span class="n">DeleteBehavior</span><span class="p">.</span><span class="n">NoAction</span><span class="p">);</span>
+            <span class="p">});</span>
+
+    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnConfiguring</span><span class="p">(</span><span class="n">DbContextOptionsBuilder</span> <span class="n">optionsBuilder</span><span class="p">)</span> <span class="p">=&gt;</span>
+        <span class="n">optionsBuilder</span><span class="p">.</span><span class="nf">UseSqlServer</span><span class="p">(</span><span class="k">new</span> <span class="n">SqlConnection</span> <span class="p">{</span> <span class="n">ConnectionString</span> <span class="p">=</span> <span class="n">ConnectionString</span> <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Done with a tad of boilerplate, we generate the migration <code class="highlighter-rouge">MakersMakeBaskets</code>, that would look like this. Heavy, but the machine does it for us, no big deal:</p>
+<div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">MakersMakeBaskets</span> <span class="p">:</span> <span class="n">Migration</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">Up</span><span class="p">(</span><span class="n">MigrationBuilder</span> <span class="n">migrationBuilder</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">migrationBuilder</span><span class="p">.</span><span class="nf">CreateTable</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">:</span> <span class="s">"BasketMakerFruitBasket"</span><span class="p">,</span>
+            <span class="n">columns</span><span class="p">:</span> <span class="n">table</span> <span class="p">=&gt;</span> <span class="k">new</span>
+            <span class="p">{</span>
+                <span class="n">BasketMakersID</span> <span class="p">=</span> <span class="n">table</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">type</span><span class="p">:</span> <span class="s">"int"</span><span class="p">,</span> <span class="n">nullable</span><span class="p">:</span> <span class="k">false</span><span class="p">),</span>
+                <span class="n">FruitBasketsID</span> <span class="p">=</span> <span class="n">table</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">type</span><span class="p">:</span> <span class="s">"int"</span><span class="p">,</span> <span class="n">nullable</span><span class="p">:</span> <span class="k">false</span><span class="p">)</span>
+            <span class="p">},</span>
+            <span class="n">constraints</span><span class="p">:</span> <span class="n">table</span> <span class="p">=&gt;</span>
+            <span class="p">{</span>
+                <span class="n">table</span><span class="p">.</span><span class="nf">PrimaryKey</span><span class="p">(</span><span class="s">"PK_BasketMakerFruitBasket"</span><span class="p">,</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="p">{</span> <span class="n">x</span><span class="p">.</span><span class="n">BasketMakersID</span><span class="p">,</span> <span class="n">x</span><span class="p">.</span><span class="n">FruitBasketsID</span> <span class="p">});</span>
+                <span class="n">table</span><span class="p">.</span><span class="nf">ForeignKey</span><span class="p">(</span>
+                    <span class="n">name</span><span class="p">:</span> <span class="s">"FK_BasketMakerFruitBasket_BasketMakers_BasketMakersID"</span><span class="p">,</span>
+                    <span class="n">column</span><span class="p">:</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">BasketMakersID</span><span class="p">,</span>
+                    <span class="n">principalTable</span><span class="p">:</span> <span class="s">"BasketMakers"</span><span class="p">,</span>
+                    <span class="n">principalColumn</span><span class="p">:</span> <span class="s">"ID"</span><span class="p">,</span>
+                    <span class="n">onDelete</span><span class="p">:</span> <span class="n">ReferentialAction</span><span class="p">.</span><span class="n">Cascade</span><span class="p">);</span>
+                <span class="n">table</span><span class="p">.</span><span class="nf">ForeignKey</span><span class="p">(</span>
+                    <span class="n">name</span><span class="p">:</span> <span class="s">"FK_BasketMakerFruitBasket_FruitBaskets_FruitBasketsID"</span><span class="p">,</span>
+                    <span class="n">column</span><span class="p">:</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">FruitBasketsID</span><span class="p">,</span>
+                    <span class="n">principalTable</span><span class="p">:</span> <span class="s">"FruitBaskets"</span><span class="p">,</span>
+                    <span class="n">principalColumn</span><span class="p">:</span> <span class="s">"ID"</span><span class="p">,</span>
+                    <span class="n">onDelete</span><span class="p">:</span> <span class="n">ReferentialAction</span><span class="p">.</span><span class="n">Cascade</span><span class="p">);</span>
+            <span class="p">});</span>
+
+        <span class="n">migrationBuilder</span><span class="p">.</span><span class="nf">CreateIndex</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">:</span> <span class="s">"IX_BasketMakerFruitBasket_FruitBasketsID"</span><span class="p">,</span>
+            <span class="n">table</span><span class="p">:</span> <span class="s">"BasketMakerFruitBasket"</span><span class="p">,</span>
+            <span class="n">column</span><span class="p">:</span> <span class="s">"FruitBasketsID"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">Down</span><span class="p">(</span><span class="n">MigrationBuilder</span> <span class="n">migrationBuilder</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">migrationBuilder</span><span class="p">.</span><span class="nf">DropTable</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="s">"BasketMakerFruitBasket"</span><span class="p">);</span>
+        <span class="n">migrationBuilder</span><span class="p">.</span><span class="nf">DropTable</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="s">"BasketMakers"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And that’s it, now we can query our database to get all Baskets made by Maker number 3. Note that the query gets a bit convoluted, too:</p>
+
+<div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="k">using</span> <span class="nn">var</span> <span class="n">db</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">FruitsDbContext</span><span class="p">();</span>
+<span class="kt">var</span> <span class="n">baskets</span> <span class="p">=</span> <span class="k">await</span> <span class="n">db</span><span class="p">.</span><span class="n">BasketMakers</span>
+    <span class="p">.</span><span class="nf">Include</span><span class="p">(</span><span class="n">bm</span> <span class="p">=&gt;</span> <span class="n">bm</span><span class="p">.</span><span class="n">BasketMakerFruitBaskets</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">ThenInclude</span><span class="p">(</span><span class="n">bmfm</span> <span class="p">=&gt;</span> <span class="n">bmfm</span><span class="p">.</span><span class="n">FruitBasket</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">Where</span><span class="p">(</span><span class="n">bm</span> <span class="p">=&gt;</span> <span class="n">bm</span><span class="p">.</span><span class="n">ID</span> <span class="p">==</span> <span class="m">3</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">Select</span><span class="p">(</span><span class="n">bm</span> <span class="p">=&gt;</span> <span class="n">bm</span><span class="p">.</span><span class="n">BasketMakerFruitBaskets</span><span class="p">.</span><span class="nf">Select</span><span class="p">(</span><span class="n">bmfm</span> <span class="p">=&gt;</span> <span class="n">bmfm</span><span class="p">.</span><span class="n">FruitBasket</span><span class="p">))</span>
+    <span class="p">.</span><span class="nf">ToListAsync</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h2 id="entity-framework-5">Entity Framework 5</h2>
+
+<p>You’re in for a treat, this is the process to do the same in EF5 starting with the same entities:</p>
+
+<div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">BasketMaker</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">ID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">FruitBasket</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">ID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Add the relations:</p>
+
+<div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">BasketMaker</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">ID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="n">ICollection</span><span class="p">&lt;</span><span class="n">FruitBasket</span><span class="p">&gt;</span> <span class="n">FruitBaskets</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">FruitBasket</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">ID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="n">ICollection</span><span class="p">&lt;</span><span class="n">BasketMaker</span><span class="p">&gt;</span> <span class="n">BasketMakers</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Generate the migration <code class="highlighter-rouge">MakersMakeBaskets</code>, note that it looks the same, Entity Framework 5 has abstracted all of the intermediate table complexities:</p>
+
+<div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">MakersMakeBaskets</span> <span class="p">:</span> <span class="n">Migration</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">Up</span><span class="p">(</span><span class="n">MigrationBuilder</span> <span class="n">migrationBuilder</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">migrationBuilder</span><span class="p">.</span><span class="nf">CreateTable</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">:</span> <span class="s">"BasketMakerFruitBasket"</span><span class="p">,</span>
+            <span class="n">columns</span><span class="p">:</span> <span class="n">table</span> <span class="p">=&gt;</span> <span class="k">new</span>
+            <span class="p">{</span>
+                <span class="n">BasketMakersID</span> <span class="p">=</span> <span class="n">table</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">type</span><span class="p">:</span> <span class="s">"int"</span><span class="p">,</span> <span class="n">nullable</span><span class="p">:</span> <span class="k">false</span><span class="p">),</span>
+                <span class="n">FruitBasketsID</span> <span class="p">=</span> <span class="n">table</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">type</span><span class="p">:</span> <span class="s">"int"</span><span class="p">,</span> <span class="n">nullable</span><span class="p">:</span> <span class="k">false</span><span class="p">)</span>
+            <span class="p">},</span>
+            <span class="n">constraints</span><span class="p">:</span> <span class="n">table</span> <span class="p">=&gt;</span>
+            <span class="p">{</span>
+                <span class="n">table</span><span class="p">.</span><span class="nf">PrimaryKey</span><span class="p">(</span><span class="s">"PK_BasketMakerFruitBasket"</span><span class="p">,</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="p">{</span> <span class="n">x</span><span class="p">.</span><span class="n">BasketMakersID</span><span class="p">,</span> <span class="n">x</span><span class="p">.</span><span class="n">FruitBasketsID</span> <span class="p">});</span>
+                <span class="n">table</span><span class="p">.</span><span class="nf">ForeignKey</span><span class="p">(</span>
+                    <span class="n">name</span><span class="p">:</span> <span class="s">"FK_BasketMakerFruitBasket_BasketMakers_BasketMakersID"</span><span class="p">,</span>
+                    <span class="n">column</span><span class="p">:</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">BasketMakersID</span><span class="p">,</span>
+                    <span class="n">principalTable</span><span class="p">:</span> <span class="s">"BasketMakers"</span><span class="p">,</span>
+                    <span class="n">principalColumn</span><span class="p">:</span> <span class="s">"ID"</span><span class="p">,</span>
+                    <span class="n">onDelete</span><span class="p">:</span> <span class="n">ReferentialAction</span><span class="p">.</span><span class="n">Cascade</span><span class="p">);</span>
+                <span class="n">table</span><span class="p">.</span><span class="nf">ForeignKey</span><span class="p">(</span>
+                    <span class="n">name</span><span class="p">:</span> <span class="s">"FK_BasketMakerFruitBasket_FruitBaskets_FruitBasketsID"</span><span class="p">,</span>
+                    <span class="n">column</span><span class="p">:</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">FruitBasketsID</span><span class="p">,</span>
+                    <span class="n">principalTable</span><span class="p">:</span> <span class="s">"FruitBaskets"</span><span class="p">,</span>
+                    <span class="n">principalColumn</span><span class="p">:</span> <span class="s">"ID"</span><span class="p">,</span>
+                    <span class="n">onDelete</span><span class="p">:</span> <span class="n">ReferentialAction</span><span class="p">.</span><span class="n">Cascade</span><span class="p">);</span>
+            <span class="p">});</span>
+
+        <span class="n">migrationBuilder</span><span class="p">.</span><span class="nf">CreateIndex</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">:</span> <span class="s">"IX_BasketMakerFruitBasket_FruitBasketsID"</span><span class="p">,</span>
+            <span class="n">table</span><span class="p">:</span> <span class="s">"BasketMakerFruitBasket"</span><span class="p">,</span>
+            <span class="n">column</span><span class="p">:</span> <span class="s">"FruitBasketsID"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">Down</span><span class="p">(</span><span class="n">MigrationBuilder</span> <span class="n">migrationBuilder</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">migrationBuilder</span><span class="p">.</span><span class="nf">DropTable</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="s">"BasketMakerFruitBasket"</span><span class="p">);</span>
+        <span class="n">migrationBuilder</span><span class="p">.</span><span class="nf">DropTable</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="s">"BasketMakers"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Profit. Even the queries are quite cleaner:</p>
+
+<div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="k">using</span> <span class="nn">var</span> <span class="n">db</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">FruitsDbContext</span><span class="p">();</span>
+<span class="kt">var</span> <span class="n">baskets</span> <span class="p">=</span> <span class="k">await</span> <span class="n">db</span><span class="p">.</span><span class="n">BasketMakers</span>
+    <span class="p">.</span><span class="nf">Include</span><span class="p">(</span><span class="n">bm</span> <span class="p">=&gt;</span> <span class="n">bm</span><span class="p">.</span><span class="n">FruitBaskets</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">Where</span><span class="p">(</span><span class="n">bm</span> <span class="p">=&gt;</span> <span class="n">bm</span><span class="p">.</span><span class="n">ID</span> <span class="p">==</span> <span class="m">3</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">Select</span><span class="p">(</span><span class="n">bm</span> <span class="p">=&gt;</span> <span class="n">bm</span><span class="p">.</span><span class="n">FruitBaskets</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">ToListAsync</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Hooray for the people behind <a href="https://github.com/dotnet/efcore">Entity Framework Core</a>, make sure to drop there and leave a star.</p>
+
+<p><span>Photo by <a href="https://unsplash.com/@sebastiengoldberg?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Sébastien Goldberg</a> on <a href="https://unsplash.com/s/photos/migration?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span></p>
+
+                </div>
+            </section>
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            
+                <section class="post-full-comments">
+                  <div id="disqus_thread"></div>
+                  <script>
+
+                  /**
+                  *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                  *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+
+                  var disqus_config = function () {
+                      this.page.url = 'https://jycabello.github.io/efcore_many_to_many_relations';
+                      this.page.identifier = 'https://jycabello.github.io/efcore_many_to_many_relations';
+                  };
+
+                  (function() { // DON'T EDIT BELOW THIS LINE
+                    var d = document, s = d.createElement('script');
+                    s.src = 'https://ycabello.disqus.com/embed.js';
+                    s.setAttribute('data-timestamp', + new Date());
+                    (d.head || d.body).appendChild(s);
+                  })();
+                  </script>
+                  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                </section>
+            
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+                    <article class="read-next-card"
+                        
+                            style="background-image: url(/assets/images/blog-cover-dark.png)"
+                        
+                    >
+                        <header class="read-next-card-header">
+                            <small class="read-next-card-header-sitetitle">&mdash; 🖋 Yeray Cabello 🏴‍☠️ &mdash;</small>
+                            
+                                <h3 class="read-next-card-header-title"><a href="/tag/dot-net/">Dot-net</a></h3>
+                            
+                        </header>
+                        <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
+</div>
+                        <div class="read-next-card-content">
+                            <ul>
+                                
+                                
+                                  
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/efcore_non_breaking_migrations">Doing non-breaking migrations in Entity Framework Core</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                            </ul>
+                        </div>
+                        <footer class="read-next-card-footer">
+                            <a href="/tag/dot-net/">
+                                
+                                    See all 1 posts  →
+                                
+                            </a>
+                        </footer>
+                    </article>
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/efcore_non_breaking_migrations">
+                <div class="post-card-image" style="background-image: url(/assets/images/jan-niclas-aberle-h5ZqVoCDgys-unsplash.jpg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/efcore_non_breaking_migrations">
+                <header class="post-card-header">
+                    
+                        
+                            
+                               <span class="post-card-tags">Dot-net</span>
+                            
+                        
+                            
+                                <span class="post-card-tags">Advanced</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Doing non-breaking migrations in Entity Framework Core</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p></p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      1 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://jycabello.github.io/">
+            
+            <span>🖋 Yeray Cabello 🏴‍☠️</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">Many-to-many relationships in Entity Framework Core 5 and 3</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share =></div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Many-to-many+relationships+in+Entity+Framework+Core+5+and+3&amp;url=https://jycabello.github.io/efcore_many_to_many_relations"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://jycabello.github.io/efcore_many_to_many_relations"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="https://jycabello.github.io/">🖋 Yeray Cabello 🏴‍☠️</a> &copy; 2020</section>
+                <section class="poweredby"><a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyller/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    <a href="https://twitter.com/jycabello" target="_blank" rel="noopener">Twitter</a>
+                    <a href="https://www.linkedin.com/in/jycabello" target="_blank" rel="noopener">LinkedIn</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-114315531-3', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+
+</body>
+</html>
