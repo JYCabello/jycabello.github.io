@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Hyerarchichal test data generators</title>
+        
+          <description>&lt;p&gt;So, you got some massive legacy service methods were mocking your data store is unfeasible or some situation where, for efficiency reasons, it’s convenient that your logic is executed in the data store. And you got to write some automated checks to make sure that some of the assumptions you will make on your code are valid. For that, you need real records in a real database.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 20 Dec 2021 13:00:00 +0000</pubDate>
+        <link>
+        https://jycabello.github.io/hyerarchical-test-data-generation</link>
+        <guid isPermaLink="true">https://jycabello.github.io/hyerarchical-test-data-generation</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Many-to-many relationships in Entity Framework Core 5 and 3</title>
         
           <description>&lt;p&gt;Scenario is quite simple, you got two tables and you have to stablish a relation between both. Be it fruit baskets and basket makers. One maker can make many baskets and they can also collaborate, having a basket be made by different people.&lt;/p&gt;

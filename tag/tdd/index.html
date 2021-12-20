@@ -11,7 +11,7 @@
 
 
 
-    <title>🖋 Yeray Cabello 🏴‍☠️</title>
+    <title>Tdd - 🖋 Yeray Cabello 🏴‍☠️</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -41,19 +41,19 @@
     <!-- This tag outputs SEO meta+structured data and other important settings -->
     <meta name="description" content="I'm not that clever, I don't know that much." />
     <link rel="shortcut icon" href="https://jycabello.github.io/assets/images/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://jycabello.github.io/" />
+    <link rel="canonical" href="https://jycabello.github.io/tag/tdd/" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="🖋 Yeray Cabello 🏴‍☠️" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="🖋 Yeray Cabello 🏴‍☠️" />
+    <meta property="og:title" content="Tdd - 🖋 Yeray Cabello 🏴‍☠️" />
     <meta property="og:description" content="I'm not that clever, I don't know that much." />
-    <meta property="og:url" content="https://jycabello.github.io/" />
+    <meta property="og:url" content="https://jycabello.github.io/tag/tdd/" />
     <meta property="og:image" content="https://jycabello.github.io/assets/images/blog-cover-dark.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="🖋 Yeray Cabello 🏴‍☠️" />
+    <meta name="twitter:title" content="Tdd - 🖋 Yeray Cabello 🏴‍☠️" />
     <meta name="twitter:description" content="I'm not that clever, I don't know that much." />
     <meta name="twitter:url" content="https://jycabello.github.io/" />
     <meta name="twitter:image" content="https://jycabello.github.io/assets/images/blog-cover-dark.png" />
@@ -73,7 +73,7 @@
         "name": "🖋 Yeray Cabello 🏴‍☠️",
         "logo": "https://jycabello.github.io/"
     },
-    "url": "https://jycabello.github.io/",
+    "url": "https://jycabello.github.io/tag/tdd/",
     "image": {
         "@type": "ImageObject",
         "url": "https://jycabello.github.io/assets/images/blog-cover-dark.png",
@@ -82,7 +82,7 @@
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://jycabello.github.io/"
+        "@id": "https://jycabello.github.io/tag/tdd/"
     },
     "description": "I'm not that clever, I don't know that much."
 }
@@ -97,7 +97,7 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="🖋 Yeray Cabello 🏴‍☠️" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Tag Page" href="/feed.xml" />
 
     <style>
         .highlighter-rouge, .highlight, code {
@@ -107,27 +107,26 @@
 
 
 </head>
-<body class="home-template">
+<body class="tag-template">
 
     <div class="site-wrapper">
         <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
-        <!-- < default -->
-<!-- The tag above means: insert everything in this file
-into the {body} of the default.hbs template -->
+        <!-- default -->
+<!-- The tag above means - insert everything in this file into the {body} of the default.hbs template -->
 
 <!-- The big featured header, it uses blog cover image as a BG if available -->
-<header class="site-header outer " style="background-image:  url(/assets/images/blog-cover-dark.png) ">
+<!-- #tag -->
+<!-- dynamically loading backgrounds for tags,  descriptions and page titles -->
+
+
+<header class="site-header outer no-cover">
     <div class="inner">
-        <div class="site-header-content">
-            <h1 class="site-title">
-                
-                    🖋 Yeray Cabello 🏴‍☠️
-                
-            </h1>
-            <h2 class="site-description">I'm not that clever, I don't know that much.</h2>
-        </div>
         <nav class="site-nav">
     <div class="site-nav-left">
+        
+        
+        <a class="site-nav-logo" href="https://jycabello.github.io/">🖋 Yeray Cabello 🏴‍☠️</a>
+        
         
         
         <ul class="nav" role="menu">
@@ -153,19 +152,27 @@ into the {body} of the default.hbs template -->
     </div>
 </nav>
 
+        <div class="site-header-content">
+            <h1 class="site-title">Tdd</h1>
+            <h2 class="site-description">
+                
+    			    A collection of 1 posts
+                
+            </h2>
+        </div>
     </div>
 </header>
+<!-- tag -->
 
 <!-- The main content area -->
 <main id="site-main" class="site-main outer" role="main">
     <div class="inner">
-
         <div class="post-feed">
             <!-- The tag below includes the markup for each post - partials/post-card.hbs -->
             
 
 
-    <article class="post-card home-template">
+    <article class="post-card tag-template">
         
             <a class="post-card-image-link" href="/hyerarchical-test-data-generation">
                 <div class="post-card-image" style="background-image: url(/assets/images/edvard-alexander-rolvaag-E75ZuAIpCzo-unsplash.jpg)"></div>
@@ -189,201 +196,6 @@ into the {body} of the default.hbs template -->
                 <section class="post-card-excerpt">
                     
                         <p>So, you got some massive legacy service methods were mocking your data store is unfeasible or some situation where, for efficiency reasons, it’s convenient that your logic is executed in the data store.</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      4 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-    <article class="post-card home-template">
-        
-            <a class="post-card-image-link" href="/efcore_many_to_many_relations">
-                <div class="post-card-image" style="background-image: url(/assets/images/sebastien-goldberg-unsplash.jpg)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/efcore_many_to_many_relations">
-                <header class="post-card-header">
-                    
-                        
-                            <span class="post-card-tags">Dot-net</span>
-                        
-                            <span class="post-card-tags">Basic</span>
-                        
-                    
-
-                    <h2 class="post-card-title">Many-to-many relationships in Entity Framework Core 5 and 3</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>Scenario is quite simple, you got two tables and you have to stablish a relation between both. Be it fruit baskets and basket makers. One maker can make many baskets and they can</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      4 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-    <article class="post-card home-template">
-        
-            <a class="post-card-image-link" href="/efcore_non_breaking_migrations">
-                <div class="post-card-image" style="background-image: url(/assets/images/jan-niclas-aberle-h5ZqVoCDgys-unsplash.jpg)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/efcore_non_breaking_migrations">
-                <header class="post-card-header">
-                    
-                        
-                            <span class="post-card-tags">Dot-net</span>
-                        
-                            <span class="post-card-tags">Advanced</span>
-                        
-                    
-
-                    <h2 class="post-card-title">Doing non-breaking migrations in Entity Framework Core</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>So, you’re using an Object Relational Mapper of any kind and you have to, let’s say, remove a field from one of your models. This is a breaking change, as your contract with</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      5 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-    <article class="post-card home-template">
-        
-            <a class="post-card-image-link" href="/flat-map-tuple">
-                <div class="post-card-image" style="background-image: url(/assets/images/derek-story-Kd7Fdg337Qk-unsplash.jpg)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/flat-map-tuple">
-                <header class="post-card-header">
-                    
-                        
-                            <span class="post-card-tags">Functional-programming</span>
-                        
-                            <span class="post-card-tags">Advanced</span>
-                        
-                    
-
-                    <h2 class="post-card-title">Flat map tuple - functional patterns</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>One of the fantastic things about functional programming is that you have to abstract away the path that took you to the data, mostly with data structures. So when you are processing the</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      5 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-    <article class="post-card home-template">
-        
-            <a class="post-card-image-link" href="/plunder-with-thunder">
-                <div class="post-card-image" style="background-image: url(/assets/images/pirate-flag.png)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/plunder-with-thunder">
-                <header class="post-card-header">
-                    
-                        
-                            <span class="post-card-tags">Professional-growth</span>
-                        
-                    
-
-                    <h2 class="post-card-title">Plunder with thunder</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>I work in an industry where knowledge is, most of the time, valued over diplomas and certifications, so it has been relatively easy to thrive without a degree. That does not mean that</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      5 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-    <article class="post-card home-template">
-        
-            <a class="post-card-image-link" href="/pushing-to-a-github-repo-in-github-actions">
-                <div class="post-card-image" style="background-image: url(/assets/images/gears.png)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/pushing-to-a-github-repo-in-github-actions">
-                <header class="post-card-header">
-                    
-                        
-                            <span class="post-card-tags">Meta</span>
-                        
-                            <span class="post-card-tags">Automation</span>
-                        
-                            <span class="post-card-tags">Basic</span>
-                        
-                    
-
-                    <h2 class="post-card-title">Pushing to a repository in github actions</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>The very first article of this blog is about the blog itself, specifically about its release pipeline. So, to get in sync with the problem at hand, let’s take a trip around the</p>
                     
                 </section>
             </a>
