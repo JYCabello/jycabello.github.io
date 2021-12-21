@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
-  <generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator>
+  <generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator>
   <link href="https://jycabello.github.io/tag/dot-net/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://jycabello.github.io/" rel="alternate" type="text/html" />
-  <updated>2021-12-20T15:10:41+00:00</updated>
+  <updated>2021-12-21T12:11:21+00:00</updated>
   <id>https://jycabello.github.io/tag/dot-net/feed.xml</id>
 
   
@@ -179,7 +179,7 @@
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;The upside of this is that we can just contain any complexity of relating the data to its parents to the &lt;code class=&quot;highlighter-rouge&quot;&gt;Fill&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Create&lt;/code&gt; methods.&lt;/p&gt;
+&lt;p&gt;The upside of this is that we can just contain any complexity of relating the data to its parents to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Fill&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Create&lt;/code&gt; methods.&lt;/p&gt;
 
 &lt;p&gt;It’s not a perfect solution and it comes with its own pains and need for discipline, but it has simplified refactoring legacy code for me a great deal. A trade off that was been worth for me in every project I’ve used it on.&lt;/p&gt;
 
@@ -230,9 +230,9 @@
 &lt;p&gt;Hands on, this is what we will end up having in our SQL schema.&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;A table called &lt;code class=&quot;highlighter-rouge&quot;&gt;FruitBaskets&lt;/code&gt;.&lt;/li&gt;
-  &lt;li&gt;Another table called &lt;code class=&quot;highlighter-rouge&quot;&gt;BasketMakers&lt;/code&gt;.&lt;/li&gt;
-  &lt;li&gt;An intermediate table calle &lt;code class=&quot;highlighter-rouge&quot;&gt;FruitBasketBasketMaker&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;BasketMakerFruitBasket&lt;/code&gt; (doesn’t really matter which, we’ll go with the latter).&lt;/li&gt;
+  &lt;li&gt;A table called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FruitBaskets&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Another table called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BasketMakers&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;An intermediate table calle &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FruitBasketBasketMaker&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BasketMakerFruitBasket&lt;/code&gt; (doesn’t really matter which, we’ll go with the latter).&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;These are the entities:&lt;/p&gt;
@@ -313,7 +313,7 @@
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Done with a tad of boilerplate, we generate the migration &lt;code class=&quot;highlighter-rouge&quot;&gt;MakersMakeBaskets&lt;/code&gt;, that would look like this. Heavy, but the machine does it for us, no big deal:&lt;/p&gt;
+&lt;p&gt;Done with a tad of boilerplate, we generate the migration &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MakersMakeBaskets&lt;/code&gt;, that would look like this. Heavy, but the machine does it for us, no big deal:&lt;/p&gt;
 &lt;div class=&quot;language-cs highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;partial&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MakersMakeBaskets&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Migration&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;override&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MigrationBuilder&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;migrationBuilder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -397,7 +397,7 @@
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Generate the migration &lt;code class=&quot;highlighter-rouge&quot;&gt;MakersMakeBaskets&lt;/code&gt;, note that it looks the same, Entity Framework 5 has abstracted all of the intermediate table complexities:&lt;/p&gt;
+&lt;p&gt;Generate the migration &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MakersMakeBaskets&lt;/code&gt;, note that it looks the same, Entity Framework 5 has abstracted all of the intermediate table complexities:&lt;/p&gt;
 
 &lt;div class=&quot;language-cs highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;partial&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MakersMakeBaskets&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Migration&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -542,7 +542,7 @@ Cannot insert the value NULL into column 'Zucchini', table 'Fruits.dbo.FruitBask
 &lt;p&gt;The idea is to make a series of deployments that keep the existing version working while moving us one step forward to the goal.&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;Make the field nullable, handle possible null values and generate no migration. Deploy that version. You are not changing the database, so the previous version will work with no problem, as the assumption that &lt;code class=&quot;highlighter-rouge&quot;&gt;Zucchini&lt;/code&gt; cannot be &lt;code class=&quot;highlighter-rouge&quot;&gt;null&lt;/code&gt; remains true. The new version will also work, as the only change is that the system is defensive against a problem that cannot happen.
+  &lt;li&gt;Make the field nullable, handle possible null values and generate no migration. Deploy that version. You are not changing the database, so the previous version will work with no problem, as the assumption that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Zucchini&lt;/code&gt; cannot be &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;null&lt;/code&gt; remains true. The new version will also work, as the only change is that the system is defensive against a problem that cannot happen.
     &lt;div class=&quot;language-cs highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FruitBasket&lt;/span&gt;
  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
      &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Banana&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Empty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;

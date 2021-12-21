@@ -239,7 +239,7 @@ Cannot insert the value NULL into column 'Zucchini', table 'Fruits.dbo.FruitBask
 <p>The idea is to make a series of deployments that keep the existing version working while moving us one step forward to the goal.</p>
 
 <ol>
-  <li>Make the field nullable, handle possible null values and generate no migration. Deploy that version. You are not changing the database, so the previous version will work with no problem, as the assumption that <code class="highlighter-rouge">Zucchini</code> cannot be <code class="highlighter-rouge">null</code> remains true. The new version will also work, as the only change is that the system is defensive against a problem that cannot happen.
+  <li>Make the field nullable, handle possible null values and generate no migration. Deploy that version. You are not changing the database, so the previous version will work with no problem, as the assumption that <code class="language-plaintext highlighter-rouge">Zucchini</code> cannot be <code class="language-plaintext highlighter-rouge">null</code> remains true. The new version will also work, as the only change is that the system is defensive against a problem that cannot happen.
     <div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">public</span> <span class="k">class</span> <span class="nc">FruitBasket</span>
  <span class="p">{</span>
      <span class="k">public</span> <span class="kt">string</span> <span class="n">Banana</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span> <span class="p">=</span> <span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">;</span>

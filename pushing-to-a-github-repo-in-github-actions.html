@@ -290,14 +290,14 @@ repository and there are villains out there with bots constantly scanning for pe
 
 <p><img src="assets/images/github/github_token_permissions.png" alt="token_permissions" width="800" /></p>
 
-<p>In order to have the token usable in your pipeline, you need to set it as a secret in your pipeline, I named it <code class="highlighter-rouge">PUSH_TOKEN</code>.</p>
+<p>In order to have the token usable in your pipeline, you need to set it as a secret in your pipeline, I named it <code class="language-plaintext highlighter-rouge">PUSH_TOKEN</code>.</p>
 
 <p><img src="assets/images/github/github_save_token.png" alt="token_permissions" width="800" /></p>
 
 <p>Now is just a matter of consuming it. The first two lines will set your git user, make sure to set the values to your email and user name.</p>
 
-<p>Then it will go to your build agent home and clone your static site repository (if you name it <code class="highlighter-rouge">[githubusername].github.io</code> it will serve it straight away),
-get into the folder, make sure you are in <code class="highlighter-rouge">master</code> (or your chosen branch), delete all contents except the <code class="highlighter-rouge">.git</code> directory (for a cleanup of deleted files)
+<p>Then it will go to your build agent home and clone your static site repository (if you name it <code class="language-plaintext highlighter-rouge">[githubusername].github.io</code> it will serve it straight away),
+get into the folder, make sure you are in <code class="language-plaintext highlighter-rouge">master</code> (or your chosen branch), delete all contents except the <code class="language-plaintext highlighter-rouge">.git</code> directory (for a cleanup of deleted files)
 copy the built static site, make a commit and push it back.</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Checkout static site and make a commit</span>

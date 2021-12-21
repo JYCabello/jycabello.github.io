@@ -11,7 +11,6 @@
         <title>Hyerarchichal test data generators</title>
         
           <description>&lt;p&gt;So, you got some massive legacy service methods were mocking your data store is unfeasible or some situation where, for efficiency reasons, it’s convenient that your logic is executed in the data store. And you got to write some automated checks to make sure that some of the assumptions you will make on your code are valid. For that, you need real records in a real database.&lt;/p&gt;
-
 </description>
         
         <pubDate>Mon, 20 Dec 2021 13:00:00 +0000</pubDate>
@@ -26,7 +25,6 @@
         <title>Many-to-many relationships in Entity Framework Core 5 and 3</title>
         
           <description>&lt;p&gt;Scenario is quite simple, you got two tables and you have to stablish a relation between both. Be it fruit baskets and basket makers. One maker can make many baskets and they can also collaborate, having a basket be made by different people.&lt;/p&gt;
-
 </description>
         
         <pubDate>Wed, 16 Dec 2020 10:00:00 +0000</pubDate>
@@ -41,7 +39,6 @@
         <title>Doing non-breaking migrations in Entity Framework Core</title>
         
           <description>&lt;p&gt;So, you’re using an Object Relational Mapper of any kind and you have to, let’s say, remove a field from one of your models. This is a breaking change, as your contract with the database is going to break. If you have a small project that you can just take down for every release, that’s not a big deal, but:&lt;/p&gt;
-
 </description>
         
         <pubDate>Wed, 16 Dec 2020 10:00:00 +0000</pubDate>
@@ -55,8 +52,7 @@
       <item>
         <title>Flat map tuple - functional patterns</title>
         
-          <description>&lt;p&gt;One of the fantastic things about functional programming is that you &lt;strong&gt;have to&lt;/strong&gt; abstract away the path that took you to the data, mostly with data structures. So when you are processing the &lt;code class=&quot;highlighter-rouge&quot;&gt;some&lt;/code&gt; state of an &lt;code class=&quot;highlighter-rouge&quot;&gt;Option&lt;/code&gt;, you know that the object is there. When processing the &lt;code class=&quot;highlighter-rouge&quot;&gt;right&lt;/code&gt; of an &lt;code class=&quot;highlighter-rouge&quot;&gt;Either&lt;/code&gt;, you know you have an object that has dodged every error or alternative path. You don’t get his benefit for free, as the data structure forces you to handle all of its states, you might see yourself needing three objects, all of them contained in their own instance of such a structure.&lt;/p&gt;
-
+          <description>&lt;p&gt;One of the fantastic things about functional programming is that you &lt;strong&gt;have to&lt;/strong&gt; abstract away the path that took you to the data, mostly with data structures. So when you are processing the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;some&lt;/code&gt; state of an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Option&lt;/code&gt;, you know that the object is there. When processing the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;right&lt;/code&gt; of an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Either&lt;/code&gt;, you know you have an object that has dodged every error or alternative path. You don’t get his benefit for free, as the data structure forces you to handle all of its states, you might see yourself needing three objects, all of them contained in their own instance of such a structure.&lt;/p&gt;
 </description>
         
         <pubDate>Wed, 04 Nov 2020 10:31:13 +0000</pubDate>
@@ -75,7 +71,6 @@ easy to thrive without a degree.
 That does not mean that I haven’t received my fair share of “you have to be an actual engineer” and “I don’t think you are qualified to do that”.
 I did have the option to finish my computer science studies, but as I was already working in the industry I found myself with less and less time
 to study and had to make a decision. I ended up quitting my studies to… have time to learn.&lt;/p&gt;
-
 </description>
         
         <pubDate>Thu, 26 Dec 2019 15:12:13 +0000</pubDate>
@@ -91,7 +86,6 @@ to study and had to make a decision. I ended up quitting my studies to… have t
         
           <description>&lt;p&gt;The very first article of this blog is about the blog itself, specifically about its release pipeline. So, to get in sync with the problem at hand, let’s take a
 trip around the nature of the blog.&lt;/p&gt;
-
 </description>
         
         <pubDate>Wed, 11 Dec 2019 19:12:13 +0000</pubDate>

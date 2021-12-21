@@ -195,9 +195,9 @@ into the {body} of the default.hbs template -->
 <p>Hands on, this is what we will end up having in our SQL schema.</p>
 
 <ul>
-  <li>A table called <code class="highlighter-rouge">FruitBaskets</code>.</li>
-  <li>Another table called <code class="highlighter-rouge">BasketMakers</code>.</li>
-  <li>An intermediate table calle <code class="highlighter-rouge">FruitBasketBasketMaker</code> or <code class="highlighter-rouge">BasketMakerFruitBasket</code> (doesn’t really matter which, we’ll go with the latter).</li>
+  <li>A table called <code class="language-plaintext highlighter-rouge">FruitBaskets</code>.</li>
+  <li>Another table called <code class="language-plaintext highlighter-rouge">BasketMakers</code>.</li>
+  <li>An intermediate table calle <code class="language-plaintext highlighter-rouge">FruitBasketBasketMaker</code> or <code class="language-plaintext highlighter-rouge">BasketMakerFruitBasket</code> (doesn’t really matter which, we’ll go with the latter).</li>
 </ul>
 
 <p>These are the entities:</p>
@@ -278,7 +278,7 @@ into the {body} of the default.hbs template -->
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Done with a tad of boilerplate, we generate the migration <code class="highlighter-rouge">MakersMakeBaskets</code>, that would look like this. Heavy, but the machine does it for us, no big deal:</p>
+<p>Done with a tad of boilerplate, we generate the migration <code class="language-plaintext highlighter-rouge">MakersMakeBaskets</code>, that would look like this. Heavy, but the machine does it for us, no big deal:</p>
 <div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">MakersMakeBaskets</span> <span class="p">:</span> <span class="n">Migration</span>
 <span class="p">{</span>
     <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">Up</span><span class="p">(</span><span class="n">MigrationBuilder</span> <span class="n">migrationBuilder</span><span class="p">)</span>
@@ -362,7 +362,7 @@ into the {body} of the default.hbs template -->
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Generate the migration <code class="highlighter-rouge">MakersMakeBaskets</code>, note that it looks the same, Entity Framework 5 has abstracted all of the intermediate table complexities:</p>
+<p>Generate the migration <code class="language-plaintext highlighter-rouge">MakersMakeBaskets</code>, note that it looks the same, Entity Framework 5 has abstracted all of the intermediate table complexities:</p>
 
 <div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">MakersMakeBaskets</span> <span class="p">:</span> <span class="n">Migration</span>
 <span class="p">{</span>
