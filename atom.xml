@@ -8,6 +8,20 @@
     
       
       <item>
+        <title>Contract negotiation and versioning</title>
+        
+          <description>&lt;p&gt;Changing the input or output of an API endpoint that is consumed by your front end, changing a field in a database that is coupled to a field in a model in our application. Sometimes, you see yourself making changes in two different systems and it’s really tempting to coordinate the release of both systems to keep them in sync.&lt;/p&gt;
+</description>
+        
+        <pubDate>Tue, 21 Dec 2021 13:00:00 +0000</pubDate>
+        <link>
+        https://jycabello.github.io/contract-negotiation-versioning</link>
+        <guid isPermaLink="true">https://jycabello.github.io/contract-negotiation-versioning</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Hyerarchichal test data generators</title>
         
           <description>&lt;p&gt;So, you got some massive legacy service methods were mocking your data store is unfeasible or some situation where, for efficiency reasons, it’s convenient that your logic is executed in the data store. And you got to write some automated checks to make sure that some of the assumptions you will make on your code are valid. For that, you need real records in a real database.&lt;/p&gt;
