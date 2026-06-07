@@ -39,7 +39,7 @@
     <![endif]-->
 
     <!-- This tag outputs SEO meta+structured data and other important settings -->
-    <meta name="description" content="I'm not that clever, I don't know that much." />
+    <meta name="description" content="Figuring how to outsmart myself, one dirty little trick at a time." />
     <link rel="shortcut icon" href="https://jycabello.github.io/assets/images/favicon.png" type="image/png" />
     <link rel="canonical" href="https://jycabello.github.io/contract-negotiation-versioning" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
@@ -48,14 +48,14 @@
     <meta property="og:site_name" content="🖋 Yeray Cabello 🏴‍☠️" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Contract negotiation and versioning" />
-    <meta property="og:description" content="I'm not that clever, I don't know that much." />
+    <meta property="og:description" content="Figuring how to outsmart myself, one dirty little trick at a time." />
     <meta property="og:url" content="https://jycabello.github.io/contract-negotiation-versioning" />
     <meta property="og:image" content="https://jycabello.github.io/assets/images/sebastian-herrmann-NbtIDoFKGO8-unsplash.jpg" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:tag" content="Advanced" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Contract negotiation and versioning" />
-    <meta name="twitter:description" content="I'm not that clever, I don't know that much." />
+    <meta name="twitter:description" content="Figuring how to outsmart myself, one dirty little trick at a time." />
     <meta name="twitter:url" content="https://jycabello.github.io/" />
     <meta name="twitter:image" content="https://jycabello.github.io/assets/images/sebastian-herrmann-NbtIDoFKGO8-unsplash.jpg" />
     <meta name="twitter:label1" content="Written by" />
@@ -87,7 +87,7 @@
         "@type": "WebPage",
         "@id": "https://jycabello.github.io/contract-negotiation-versioning"
     },
-    "description": "I'm not that clever, I don't know that much."
+    "description": "Figuring how to outsmart myself, one dirty little trick at a time."
 }
     </script>
 
@@ -203,6 +203,7 @@ into the {body} of the default.hbs template -->
 <p>A problem to solve:</p>
 
 <p>We’ve found that using decimals for monetary fields causes some rounding problems, in order to keep consistency, we will start sending the field as an integer representing cents:</p>
+
 <div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// From</span>
 <span class="k">public</span> <span class="k">class</span> <span class="nc">Product</span>
 <span class="p">{</span>
@@ -219,6 +220,7 @@ into the {body} of the default.hbs template -->
 </code></pre></div></div>
 
 <p>Since you are already in the mindset of looking for trouble in out-of-sync contracts, you probably see the two possible issues with rolling back one of the sides of this contract:</p>
+
 <ol>
   <li>When rolling back the client side, a product costing ten euros will be translated as a thousand euros (<code class="language-plaintext highlighter-rouge">(int)1000 =&gt; (decimal)1000.00</code>).</li>
   <li>When rolling back server side, a product costing ten euros will be translated as ten cents (<code class="language-plaintext highlighter-rouge">(decimal)10.00 =&gt; (int)10</code>).</li>
@@ -231,6 +233,7 @@ into the {body} of the default.hbs template -->
 <p>On the client side, we follow the pattern that gives the name to this article, we “negotiate” with the server.</p>
 
 <p>I’ll write it in an imperative and synchronous way to reduce noise.</p>
+
 <div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Client side code</span>
 <span class="k">public</span> <span class="k">class</span> <span class="nc">Product</span>
 <span class="p">{</span>
@@ -263,6 +266,7 @@ into the {body} of the default.hbs template -->
 </code></pre></div></div>
 
 <p>An alternative is to indroduce another field in the product, which is not strictly versioning, but leverages the same principle.</p>
+
 <div class="language-cs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Server side</span>
 <span class="k">public</span> <span class="k">class</span> <span class="nc">Product</span>
 <span class="p">{</span>
@@ -517,7 +521,7 @@ into the {body} of the default.hbs template -->
         <!-- The footer at the very bottom of the screen -->
         <footer class="site-footer outer">
             <div class="site-footer-content inner">
-                <section class="copyright"><a href="https://jycabello.github.io/">🖋 Yeray Cabello 🏴‍☠️</a> &copy; 2023</section>
+                <section class="copyright"><a href="https://jycabello.github.io/">🖋 Yeray Cabello 🏴‍☠️</a> &copy; 2026</section>
                 <section class="poweredby"><a href="https://jekyllrb.com/">Jekyll</a> &
                     <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
                     <a href="https://github.com/jekyller/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
