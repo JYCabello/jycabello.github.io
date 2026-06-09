@@ -1,0 +1,84 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Contract negotiation and versioning — 🖋 Yeray Cabello 🏴‍☠️</title><link rel=stylesheet href=/css/site.min.f86c1e78efc4319ea27bf7dd61db666fe1be202002bcdd7b33e6d7de359b1121.css integrity="sha256-+GweeO/EMZ6ie/fdYdtmb+G+ICACvN17M+bX3jWbESE="></head><body><header class=site-head><div class=bar><a class=brand href=/><span class=tile>yc</span>
+<span class=name>Yeray Cabello</span></a><nav class=nav><a href=/>Home</a>
+<a href=/about/>About</a>
+<a href=/learning-resources/>Resources</a>
+<a href=/reading-lists/ class=lists>Reading Lists</a></nav><div class=soc><a href=https://github.com/JYCabello target=_blank rel=noopener>GH</a>
+<a href=https://www.linkedin.com/in/jycabello target=_blank rel=noopener>IN</a>
+<a href=/index.xml>RSS</a></div></div></header><main><div class=article-top><a class=backlink href=/><span>←</span> Back to the archive</a><div class=art-meta><span class=acc>⟩⟩ advanced</span>
+<span>Dec 2021</span>
+<span>4 min read</span></div><h1>Contract negotiation and versioning</h1><div class=art-tags><a class="tag fill" href=/tags/advanced/>advanced</a><a class=tag href=/tags/architecture/>architecture</a></div></div><article class=article-body><p>Changing the input or output of an API endpoint that is consumed by your front end, changing a field in a database that is coupled to a field in a model in our application. Sometimes, you see yourself making changes in two different systems and it&rsquo;s really tempting to coordinate the release of both systems to keep them in sync.</p><p>What happens if one of the releases needs to be rolled back, though? Especially in a situation where the side working fine has already some other functionality released on top of it.</p><p>Enter contract negotiation and versioning.</p><h1 id=versioning>Versioning</h1><p>One way to attack the problem is to provide a new version of the contract while maintaining the current one. This is not about API versioning as it is known, where you release a new version of your public facing API while the previous one is still active, but just about introducing a copy of the endpoint as a transition measure while you update a contract within different moving parts of your system that are deployed independently, be it microservices or background workers.</p><h1 id=contract-negotiation>Contract negotiation</h1><p>A problem to solve:</p><p>We&rsquo;ve found that using decimals for monetary fields causes some rounding problems, in order to keep consistency, we will start sending the field as an integer representing cents:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#8b949e;font-style:italic>// From</span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>Product</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>decimal</span> Price { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#8b949e;font-style:italic>// Other fields ommited for brevity.</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8b949e;font-style:italic>// To</span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>Product</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> Price { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#8b949e;font-style:italic>// Other fields ommited for brevity.</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Since you are already in the mindset of looking for trouble in out-of-sync contracts, you probably see the two possible issues with rolling back one of the sides of this contract:</p><ol><li>When rolling back the client side, a product costing ten euros will be translated as a thousand euros (<code>(int)1000 => (decimal)1000.00</code>).</li><li>When rolling back server side, a product costing ten euros will be translated as ten cents (<code>(decimal)10.00 => (int)10</code>).</li></ol><h2 id=forward-and-backwards-compatibility>Forward and backwards compatibility</h2><p>In order to prevent this, we version the endpoint and we have the server maintain both versions of it. So clients calling the old endpoint will still work. I will not include code examples of it due to its trivial nature.</p><p>On the client side, we follow the pattern that gives the name to this article, we &ldquo;negotiate&rdquo; with the server.</p><p>I&rsquo;ll write it in an imperative and synchronous way to reduce noise.</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#8b949e;font-style:italic>// Client side code</span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>Product</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> Price { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#8b949e;font-style:italic>// Other fields ommited for brevity.</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>ProductLegacy</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>decimal</span> Price { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#8b949e;font-style:italic>// Other fields ommited for brevity.</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> Product Get(<span style=color:#ff7b72>int</span> id)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>try</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#ff7b72>return</span> GetWithCents(id);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>catch</span> (EndpointNotFoundException)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#ff7b72>var</span> legacy = GetLegacy(id);
+</span></span><span style=display:flex><span>        <span style=color:#ff7b72>return</span> <span style=color:#ff7b72>new</span> Product
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            Price = ConvertDecimalMoneyToCents(legacy.Price)
+</span></span><span style=display:flex><span>            <span style=color:#8b949e;font-style:italic>// Other fields ommited for brevity.</span>
+</span></span><span style=display:flex><span>        };
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>An alternative is to indroduce another field in the product, which is not strictly versioning, but leverages the same principle.</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#8b949e;font-style:italic>// Server side</span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>Product</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>decimal</span> Price { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> PriceCents { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#8b949e;font-style:italic>// Other fields ommited for brevity.</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8b949e;font-style:italic>// Client side</span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>ProductDto</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>decimal</span> Price { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int?</span> PriceCents { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#8b949e;font-style:italic>// Other fields ommited for brevity.</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>Product</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> Price { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> Product Get(<span style=color:#ff7b72>int</span> id)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>var</span> dto = GetProduct(id);
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>return</span> <span style=color:#ff7b72>new</span> Product
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        Price = dto.PriceCents ?? ConvertDecimalMoneyToCents(legacy.Price)
+</span></span><span style=display:flex><span>        <span style=color:#8b949e;font-style:italic>// Other fields ommited for brevity.</span>
+</span></span><span style=display:flex><span>    };
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><a href=/efcore_non_breaking_migrations/>Non breaking migrations</a> is just a subset of this practice, reminding us once again that we often need to think on our database as just another subsystem in our solution.</p><p>If you do event sourcing, you&rsquo;ll find that doing non breaking migrations is as simple as just starting a new table for the new model, making contract negotiation as trivial as it gets.</p><p><span>Photo by <a href="https://unsplash.com/@officestock?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Sebastian Herrmann</a> on <a href="https://unsplash.com/s/photos/contract?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></span></p></article><section class=comments><div class=comments-label>⟩⟩ comments</div><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//ycabello.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></section><nav class=art-nav><a class=prev href=/hyerarchical-test-data-generation/><div class=lbl>← Previous</div><div class=ttl>Hyerarchichal test data generators</div></a><span></span></nav><div class=endmark>⟩⟩ end of file</div></main><footer class=site-foot><div class=inner><span class=name>Yeray Cabello</span>
+<span class=tagline>Figuring out how to outsmart myself, one dirty little trick at a time.</span><div class=fsoc><a href=https://github.com/JYCabello target=_blank rel=noopener>GitHub</a>
+<a href=https://www.linkedin.com/in/jycabello target=_blank rel=noopener>LinkedIn</a>
+<a href=/index.xml>RSS</a></div></div></footer><script>(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)})(window,document,"script","//www.google-analytics.com/analytics.js","ga"),ga("create","UA-114315531-3","auto"),ga("send","pageview")</script></body></html>

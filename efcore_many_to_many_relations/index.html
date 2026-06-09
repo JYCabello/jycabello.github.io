@@ -1,0 +1,185 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Many-to-many relationships in Entity Framework Core 5 and 3 — 🖋 Yeray Cabello 🏴‍☠️</title><link rel=stylesheet href=/css/site.min.f86c1e78efc4319ea27bf7dd61db666fe1be202002bcdd7b33e6d7de359b1121.css integrity="sha256-+GweeO/EMZ6ie/fdYdtmb+G+ICACvN17M+bX3jWbESE="></head><body><header class=site-head><div class=bar><a class=brand href=/><span class=tile>yc</span>
+<span class=name>Yeray Cabello</span></a><nav class=nav><a href=/>Home</a>
+<a href=/about/>About</a>
+<a href=/learning-resources/>Resources</a>
+<a href=/reading-lists/ class=lists>Reading Lists</a></nav><div class=soc><a href=https://github.com/JYCabello target=_blank rel=noopener>GH</a>
+<a href=https://www.linkedin.com/in/jycabello target=_blank rel=noopener>IN</a>
+<a href=/index.xml>RSS</a></div></div></header><main><div class=article-top><a class=backlink href=/><span>←</span> Back to the archive</a><div class=art-meta><span class=acc>⟩⟩ dot-net</span>
+<span>Dec 2020</span>
+<span>4 min read</span></div><h1>Many-to-many relationships in Entity Framework Core 5 and 3</h1><div class=art-tags><a class="tag fill" href=/tags/dot-net/>dot-net</a><a class=tag href=/tags/basic/>basic</a></div></div><article class=article-body><p>Scenario is quite simple, you got two tables and you have to stablish a relation between both. Be it fruit baskets and basket makers. One maker can make many baskets and they can also collaborate, having a basket be made by different people.</p><p>In raw SQL we do that with an intermediate table that represents the connection between both, an likewise we will do the same in Entity Framework Core, with some helpful additional abstraction in version 5.</p><p><em>I will obviate nullability in the examples, to avoid distractions when it comes to defaulting or null management. Also, the entities have no fields beyond their ID.</em></p><p>Hands on, this is what we will end up having in our SQL schema.</p><ul><li>A table called <code>FruitBaskets</code>.</li><li>Another table called <code>BasketMakers</code>.</li><li>An intermediate table calle <code>FruitBasketBasketMaker</code> or <code>BasketMakerFruitBasket</code> (doesn&rsquo;t really matter which, we&rsquo;ll go with the latter).</li></ul><p>These are the entities:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>BasketMaker</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> ID { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>FruitBasket</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> ID { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=entity-framework-3>Entity Framework 3</h2><p>Without support to abstract many-to-many relations away, we have to manually add an intermediate entity that will handle the relation, that would be:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>BasketMakerFruitBasket</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> BasketMaker BasketMaker { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> BasketMakersID { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> FruitBasket FruitBasket { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> FruitBasketsID { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Also, the relation has to be made explicit in the entities themselves:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>BasketMaker</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> ID { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> ICollection&lt;BasketMakerFruitBasket&gt; BasketMakerFruitBaskets { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>FruitBasket</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> ID { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> ICollection&lt;BasketMakerFruitBasket&gt; BasketMakerFruitBaskets { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>One would think that that&rsquo;s enough, but we really need to make the DBContext aware of it, too:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>FruitsDbContext</span> : DbContext
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>private</span> <span style=color:#ff7b72>const</span> <span style=color:#ff7b72>string</span> ConnectionString =
+</span></span><span style=display:flex><span>        <span style=color:#a5d6ff>&#34;Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Fruits;Integrated Security=True&#34;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> DbSet&lt;FruitBasket&gt; FruitBaskets =&gt;
+</span></span><span style=display:flex><span>        Set&lt;FruitBasket&gt;();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> DbSet&lt;BasketMakerFruitBasket&gt; BasketMakerFruitBasket =&gt;
+</span></span><span style=display:flex><span>        Set&lt;BasketMakerFruitBasket&gt;();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> DbSet&lt;BasketMaker&gt; BasketMakers =&gt;
+</span></span><span style=display:flex><span>        Set&lt;BasketMaker&gt;();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#8b949e;font-style:italic>// This is the bit you&#39;re looking for:</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>protected</span> <span style=color:#ff7b72>override</span> <span style=color:#ff7b72>void</span> OnModelCreating(ModelBuilder modelBuilder) =&gt;
+</span></span><span style=display:flex><span>        modelBuilder.Entity&lt;BasketMakerFruitBasket&gt;(entity =&gt;
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#8b949e;font-style:italic>// A combined key, made of the other two entities&#39; keys.</span>
+</span></span><span style=display:flex><span>                entity.HasKey(oc =&gt; <span style=color:#ff7b72>new</span> { BasketMakersID, FruitBasketsID });
+</span></span><span style=display:flex><span>                <span style=color:#8b949e;font-style:italic>// The reference to the basket maker.</span>
+</span></span><span style=display:flex><span>                entity.HasOne&lt;BasketMaker&gt;(oc =&gt; oc.BasketMaker)
+</span></span><span style=display:flex><span>                    .WithMany()
+</span></span><span style=display:flex><span>                    .OnDelete(DeleteBehavior.NoAction);
+</span></span><span style=display:flex><span>                <span style=color:#8b949e;font-style:italic>// The reference to the basket itself.</span>
+</span></span><span style=display:flex><span>                entity.HasOne&lt;FruitBasket&gt;(oc =&gt; oc.FruitBasket)
+</span></span><span style=display:flex><span>                    .WithMany()
+</span></span><span style=display:flex><span>                    .OnDelete(DeleteBehavior.NoAction);
+</span></span><span style=display:flex><span>            });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>protected</span> <span style=color:#ff7b72>override</span> <span style=color:#ff7b72>void</span> OnConfiguring(DbContextOptionsBuilder optionsBuilder) =&gt;
+</span></span><span style=display:flex><span>        optionsBuilder.UseSqlServer(<span style=color:#ff7b72>new</span> SqlConnection { ConnectionString = ConnectionString });
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Done with a tad of boilerplate, we generate the migration <code>MakersMakeBaskets</code>, that would look like this. Heavy, but the machine does it for us, no big deal:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>partial</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>MakersMakeBaskets</span> : Migration
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>protected</span> <span style=color:#ff7b72>override</span> <span style=color:#ff7b72>void</span> Up(MigrationBuilder migrationBuilder)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        migrationBuilder.CreateTable(
+</span></span><span style=display:flex><span>            name: <span style=color:#a5d6ff>&#34;BasketMakerFruitBasket&#34;</span>,
+</span></span><span style=display:flex><span>            columns: table =&gt; <span style=color:#ff7b72>new</span>
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                BasketMakersID = table.Column&lt;<span style=color:#ff7b72>int</span>&gt;(type: <span style=color:#a5d6ff>&#34;int&#34;</span>, nullable: <span style=color:#79c0ff>false</span>),
+</span></span><span style=display:flex><span>                FruitBasketsID = table.Column&lt;<span style=color:#ff7b72>int</span>&gt;(type: <span style=color:#a5d6ff>&#34;int&#34;</span>, nullable: <span style=color:#79c0ff>false</span>)
+</span></span><span style=display:flex><span>            },
+</span></span><span style=display:flex><span>            constraints: table =&gt;
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                table.PrimaryKey(<span style=color:#a5d6ff>&#34;PK_BasketMakerFruitBasket&#34;</span>, x =&gt; <span style=color:#ff7b72>new</span> { x.BasketMakersID, x.FruitBasketsID });
+</span></span><span style=display:flex><span>                table.ForeignKey(
+</span></span><span style=display:flex><span>                    name: <span style=color:#a5d6ff>&#34;FK_BasketMakerFruitBasket_BasketMakers_BasketMakersID&#34;</span>,
+</span></span><span style=display:flex><span>                    column: x =&gt; x.BasketMakersID,
+</span></span><span style=display:flex><span>                    principalTable: <span style=color:#a5d6ff>&#34;BasketMakers&#34;</span>,
+</span></span><span style=display:flex><span>                    principalColumn: <span style=color:#a5d6ff>&#34;ID&#34;</span>,
+</span></span><span style=display:flex><span>                    onDelete: ReferentialAction.Cascade);
+</span></span><span style=display:flex><span>                table.ForeignKey(
+</span></span><span style=display:flex><span>                    name: <span style=color:#a5d6ff>&#34;FK_BasketMakerFruitBasket_FruitBaskets_FruitBasketsID&#34;</span>,
+</span></span><span style=display:flex><span>                    column: x =&gt; x.FruitBasketsID,
+</span></span><span style=display:flex><span>                    principalTable: <span style=color:#a5d6ff>&#34;FruitBaskets&#34;</span>,
+</span></span><span style=display:flex><span>                    principalColumn: <span style=color:#a5d6ff>&#34;ID&#34;</span>,
+</span></span><span style=display:flex><span>                    onDelete: ReferentialAction.Cascade);
+</span></span><span style=display:flex><span>            });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        migrationBuilder.CreateIndex(
+</span></span><span style=display:flex><span>            name: <span style=color:#a5d6ff>&#34;IX_BasketMakerFruitBasket_FruitBasketsID&#34;</span>,
+</span></span><span style=display:flex><span>            table: <span style=color:#a5d6ff>&#34;BasketMakerFruitBasket&#34;</span>,
+</span></span><span style=display:flex><span>            column: <span style=color:#a5d6ff>&#34;FruitBasketsID&#34;</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>protected</span> <span style=color:#ff7b72>override</span> <span style=color:#ff7b72>void</span> Down(MigrationBuilder migrationBuilder)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        migrationBuilder.DropTable(name: <span style=color:#a5d6ff>&#34;BasketMakerFruitBasket&#34;</span>);
+</span></span><span style=display:flex><span>        migrationBuilder.DropTable(name: <span style=color:#a5d6ff>&#34;BasketMakers&#34;</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>And that&rsquo;s it, now we can query our database to get all Baskets made by Maker number 3. Note that the query gets a bit convoluted, too:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>await</span> <span style=color:#ff7b72>using</span> <span style=color:#ff7b72>var</span> db = <span style=color:#ff7b72>new</span> FruitsDbContext();
+</span></span><span style=display:flex><span><span style=color:#ff7b72>var</span> baskets = <span style=color:#ff7b72>await</span> db.BasketMakers
+</span></span><span style=display:flex><span>    .Include(bm =&gt; bm.BasketMakerFruitBaskets)
+</span></span><span style=display:flex><span>    .ThenInclude(bmfm =&gt; bmfm.FruitBasket)
+</span></span><span style=display:flex><span>    .Where(bm =&gt; bm.ID == <span style=color:#a5d6ff>3</span>)
+</span></span><span style=display:flex><span>    .Select(bm =&gt; bm.BasketMakerFruitBaskets.Select(bmfm =&gt; bmfm.FruitBasket))
+</span></span><span style=display:flex><span>    .ToListAsync();
+</span></span></code></pre></div><h2 id=entity-framework-5>Entity Framework 5</h2><p>You&rsquo;re in for a treat, this is the process to do the same in EF5 starting with the same entities:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>BasketMaker</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> ID { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>FruitBasket</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> ID { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Add the relations:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>BasketMaker</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> ID { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> ICollection&lt;FruitBasket&gt; FruitBaskets { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>FruitBasket</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>int</span> ID { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> ICollection&lt;BasketMaker&gt; BasketMakers { <span style=color:#ff7b72>get</span>; <span style=color:#ff7b72>set</span>; }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Generate the migration <code>MakersMakeBaskets</code>, note that it looks the same, Entity Framework 5 has abstracted all of the intermediate table complexities:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>partial</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>MakersMakeBaskets</span> : Migration
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>protected</span> <span style=color:#ff7b72>override</span> <span style=color:#ff7b72>void</span> Up(MigrationBuilder migrationBuilder)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        migrationBuilder.CreateTable(
+</span></span><span style=display:flex><span>            name: <span style=color:#a5d6ff>&#34;BasketMakerFruitBasket&#34;</span>,
+</span></span><span style=display:flex><span>            columns: table =&gt; <span style=color:#ff7b72>new</span>
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                BasketMakersID = table.Column&lt;<span style=color:#ff7b72>int</span>&gt;(type: <span style=color:#a5d6ff>&#34;int&#34;</span>, nullable: <span style=color:#79c0ff>false</span>),
+</span></span><span style=display:flex><span>                FruitBasketsID = table.Column&lt;<span style=color:#ff7b72>int</span>&gt;(type: <span style=color:#a5d6ff>&#34;int&#34;</span>, nullable: <span style=color:#79c0ff>false</span>)
+</span></span><span style=display:flex><span>            },
+</span></span><span style=display:flex><span>            constraints: table =&gt;
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                table.PrimaryKey(<span style=color:#a5d6ff>&#34;PK_BasketMakerFruitBasket&#34;</span>, x =&gt; <span style=color:#ff7b72>new</span> { x.BasketMakersID, x.FruitBasketsID });
+</span></span><span style=display:flex><span>                table.ForeignKey(
+</span></span><span style=display:flex><span>                    name: <span style=color:#a5d6ff>&#34;FK_BasketMakerFruitBasket_BasketMakers_BasketMakersID&#34;</span>,
+</span></span><span style=display:flex><span>                    column: x =&gt; x.BasketMakersID,
+</span></span><span style=display:flex><span>                    principalTable: <span style=color:#a5d6ff>&#34;BasketMakers&#34;</span>,
+</span></span><span style=display:flex><span>                    principalColumn: <span style=color:#a5d6ff>&#34;ID&#34;</span>,
+</span></span><span style=display:flex><span>                    onDelete: ReferentialAction.Cascade);
+</span></span><span style=display:flex><span>                table.ForeignKey(
+</span></span><span style=display:flex><span>                    name: <span style=color:#a5d6ff>&#34;FK_BasketMakerFruitBasket_FruitBaskets_FruitBasketsID&#34;</span>,
+</span></span><span style=display:flex><span>                    column: x =&gt; x.FruitBasketsID,
+</span></span><span style=display:flex><span>                    principalTable: <span style=color:#a5d6ff>&#34;FruitBaskets&#34;</span>,
+</span></span><span style=display:flex><span>                    principalColumn: <span style=color:#a5d6ff>&#34;ID&#34;</span>,
+</span></span><span style=display:flex><span>                    onDelete: ReferentialAction.Cascade);
+</span></span><span style=display:flex><span>            });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        migrationBuilder.CreateIndex(
+</span></span><span style=display:flex><span>            name: <span style=color:#a5d6ff>&#34;IX_BasketMakerFruitBasket_FruitBasketsID&#34;</span>,
+</span></span><span style=display:flex><span>            table: <span style=color:#a5d6ff>&#34;BasketMakerFruitBasket&#34;</span>,
+</span></span><span style=display:flex><span>            column: <span style=color:#a5d6ff>&#34;FruitBasketsID&#34;</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>protected</span> <span style=color:#ff7b72>override</span> <span style=color:#ff7b72>void</span> Down(MigrationBuilder migrationBuilder)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        migrationBuilder.DropTable(name: <span style=color:#a5d6ff>&#34;BasketMakerFruitBasket&#34;</span>);
+</span></span><span style=display:flex><span>        migrationBuilder.DropTable(name: <span style=color:#a5d6ff>&#34;BasketMakers&#34;</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Profit. Even the queries are quite cleaner:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>await</span> <span style=color:#ff7b72>using</span> <span style=color:#ff7b72>var</span> db = <span style=color:#ff7b72>new</span> FruitsDbContext();
+</span></span><span style=display:flex><span><span style=color:#ff7b72>var</span> baskets = <span style=color:#ff7b72>await</span> db.BasketMakers
+</span></span><span style=display:flex><span>    .Include(bm =&gt; bm.FruitBaskets)
+</span></span><span style=display:flex><span>    .Where(bm =&gt; bm.ID == <span style=color:#a5d6ff>3</span>)
+</span></span><span style=display:flex><span>    .Select(bm =&gt; bm.FruitBaskets)
+</span></span><span style=display:flex><span>    .ToListAsync();
+</span></span></code></pre></div><p>Hooray for the people behind <a href=https://github.com/dotnet/efcore>Entity Framework Core</a>, make sure to drop there and leave a star.</p><p><span>Photo by <a href="https://unsplash.com/@sebastiengoldberg?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Sébastien Goldberg</a> on <a href="https://unsplash.com/s/photos/migration?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span></p></article><section class=comments><div class=comments-label>⟩⟩ comments</div><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//ycabello.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></section><nav class=art-nav><a class=prev href=/flat-map-tuple/><div class=lbl>← Previous</div><div class=ttl>Flat map tuple - functional patterns</div></a><a class=next href=/efcore_non_breaking_migrations/><div class=lbl>Next →</div><div class=ttl>Doing non-breaking migrations in Entity Framework Core</div></a></nav><div class=endmark>⟩⟩ end of file</div></main><footer class=site-foot><div class=inner><span class=name>Yeray Cabello</span>
+<span class=tagline>Figuring out how to outsmart myself, one dirty little trick at a time.</span><div class=fsoc><a href=https://github.com/JYCabello target=_blank rel=noopener>GitHub</a>
+<a href=https://www.linkedin.com/in/jycabello target=_blank rel=noopener>LinkedIn</a>
+<a href=/index.xml>RSS</a></div></div></footer><script>(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)})(window,document,"script","//www.google-analytics.com/analytics.js","ga"),ga("create","UA-114315531-3","auto"),ga("send","pageview")</script></body></html>

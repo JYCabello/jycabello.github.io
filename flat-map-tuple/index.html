@@ -1,0 +1,123 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Flat map tuple - functional patterns — 🖋 Yeray Cabello 🏴‍☠️</title><link rel=stylesheet href=/css/site.min.f86c1e78efc4319ea27bf7dd61db666fe1be202002bcdd7b33e6d7de359b1121.css integrity="sha256-+GweeO/EMZ6ie/fdYdtmb+G+ICACvN17M+bX3jWbESE="></head><body><header class=site-head><div class=bar><a class=brand href=/><span class=tile>yc</span>
+<span class=name>Yeray Cabello</span></a><nav class=nav><a href=/>Home</a>
+<a href=/about/>About</a>
+<a href=/learning-resources/>Resources</a>
+<a href=/reading-lists/ class=lists>Reading Lists</a></nav><div class=soc><a href=https://github.com/JYCabello target=_blank rel=noopener>GH</a>
+<a href=https://www.linkedin.com/in/jycabello target=_blank rel=noopener>IN</a>
+<a href=/index.xml>RSS</a></div></div></header><main><div class=article-top><a class=backlink href=/><span>←</span> Back to the archive</a><div class=art-meta><span class=acc>⟩⟩ functional-programming</span>
+<span>Nov 2020</span>
+<span>6 min read</span></div><h1>Flat map tuple - functional patterns</h1><div class=art-tags><a class="tag fill" href=/tags/functional-programming/>functional-programming</a><a class=tag href=/tags/advanced/>advanced</a></div></div><article class=article-body><p>One of the fantastic things about functional programming is that you <strong>have to</strong> abstract away the path that took you to the data, mostly with data structures. So when you are processing the <code>some</code> state of an <code>Option</code>, you know that the object is there. When processing the <code>right</code> of an <code>Either</code>, you know you have an object that has dodged every error or alternative path. You don&rsquo;t get his benefit for free, as the data structure forces you to handle all of its states, you might see yourself needing three objects, all of them contained in their own instance of such a structure.</p><h6 id=what-this-is-truly-about>What this is truly about</h6><p>The pattern I&rsquo;m sharing here might only be useful to you if you&rsquo;ve faced the same problem as me, considered it worth solving and ultimately arrived to a solution that didn&rsquo;t completely click with you. The intended value of this article is to share the almost-random chain of seemingly-disconnected events that is my train of thought operating to solve a problem.</p><p>For the examples, I&rsquo;ll go with the <code>Either</code> monad and use for C#, <a href=https://github.com/louthy/language-ext>Language-ext</a> and for Kotlin, <a href=https://arrow-kt.io/>Arrow</a>.</p><p>So, let&rsquo;s say we have a insurance system and we want to print a table with the policies that a certain customer has and for that we first need the user details and the customer profile. That&rsquo;s our business problem. Thing is, it&rsquo;s never only business, we have all of these pesky issues that pop up along the way: Security, faulty connections, invalid data&mldr; Incidental complexity that usually lead to a cascade of conditionals to handle every flow distinct from our beloved happy path.</p><p>So, functional we go, we take the railway approach and model all of our exit(us) conditions in an <code>Error</code> class, put it on the left and hope for the best.</p><p>These would be the functions getting us the values and the one consuming it (ignore that they cannot fail, if you please).</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>public</span> Either&lt;Error, User&gt; GetUser(<span style=color:#ff7b72>int</span> id) =&gt;
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>new</span> User();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> Either&lt;Error, CustomerProfile&gt; GetProfile(User user) =&gt;
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>new</span> CustomerProfile();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> Either&lt;Error, List&lt;Policy&gt;&gt; GetPolicies(CustomerProfile profile) =&gt;
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>new</span> List&lt;Policy&gt;();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> Unit Print(User user, CustomerProfile profile, List&lt;Policy&gt; policies)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    Console.WriteLine(<span style=color:#a5d6ff>&#34;The actual table&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>return</span> unit;
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> Unit Print(Error error)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    Console.WriteLine(<span style=color:#a5d6ff>&#34;An error&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>return</span> unit;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-kotlin data-lang=kotlin><span style=display:flex><span><span style=color:#ff7b72>fun</span> <span style=color:#d2a8ff;font-weight:700>getUser</span>(id: Int): Either&lt;Error, User&gt; =
+</span></span><span style=display:flex><span>    User().right()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>fun</span> <span style=color:#d2a8ff;font-weight:700>getProfile</span>(user: User): Either&lt;Error, CustomerProfile&gt; =
+</span></span><span style=display:flex><span>    CustomerProfile().right()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>fun</span> <span style=color:#d2a8ff;font-weight:700>getPolicies</span>(profile: CustomerProfile): Either&lt;Error, List&lt;Policy&gt;&gt; =
+</span></span><span style=display:flex><span>    listOf&lt;Policy&gt;().right()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>fun</span> <span style=color:#d2a8ff;font-weight:700>print</span>(user: User, profile: CustomerProfile, policies: List&lt;Policy&gt;): Unit =
+</span></span><span style=display:flex><span>    println(<span style=color:#a5d6ff>&#34;The actual table&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>fun</span> <span style=color:#d2a8ff;font-weight:700>print</span>(error: Error): Unit =
+</span></span><span style=display:flex><span>    println(<span style=color:#a5d6ff>&#34;An error&#34;</span>)
+</span></span></code></pre></div><p>As you can see, every piece of logic just takes the objects, taking for granted that they are in a valid states an that the program is in a portion of its state that has the objects there.</p><p>There&rsquo;s one little annoyance, though. The <code>print</code> overload for the success path takes an <code>User</code>, a <code>CustomerProfile</code> and a list of <code>Policy</code> and what we got are three <code>Either</code>s which sets us up for some mild annoyance.</p><p>Now onto the ugliness of actually consuming this for user number one:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>public</span> Unit Print() =&gt;
+</span></span><span style=display:flex><span>    GetUser(<span style=color:#a5d6ff>1</span>)
+</span></span><span style=display:flex><span>        .Bind(user =&gt; GetProfile(user)
+</span></span><span style=display:flex><span>            .Bind(profile =&gt; GetPolicies(profile)
+</span></span><span style=display:flex><span>                .Map(policies =&gt; Print(user, profile, policies))
+</span></span><span style=display:flex><span>            )
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>        .BiFold(unit, (s, u) =&gt; u, (s, error) =&gt; Print(error));
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-kotlin data-lang=kotlin><span style=display:flex><span><span style=color:#ff7b72>fun</span> <span style=color:#d2a8ff;font-weight:700>print</span>(): Unit =
+</span></span><span style=display:flex><span>    getUser(<span style=color:#a5d6ff>1</span>)
+</span></span><span style=display:flex><span>        .flatMap { user <span style=color:#ff7b72;font-weight:700>-&gt;</span> 
+</span></span><span style=display:flex><span>            getProfile(user).flatMap { profile <span style=color:#ff7b72;font-weight:700>-&gt;</span> 
+</span></span><span style=display:flex><span>                getPolicies(profile).map { policies <span style=color:#ff7b72;font-weight:700>-&gt;</span> 
+</span></span><span style=display:flex><span>                    print(user, profile, policies) 
+</span></span><span style=display:flex><span>                } 
+</span></span><span style=display:flex><span>            } 
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        .fold(<span style=color:#ff7b72;font-weight:700>::</span>print, <span style=color:#ff7b72;font-weight:700>::</span>identity)
+</span></span></code></pre></div><p><em>Yikes!</em> The Kotlin alternative is definitely cleaner but it&rsquo;s still a proper christmas tree of nested, hard to follow and harder to debug code. Arrow offers us a clean alternative to this, using an <code>fx</code> block:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-kotlin data-lang=kotlin><span style=display:flex><span><span style=color:#ff7b72>fun</span> <span style=color:#d2a8ff;font-weight:700>printFx</span>(): Unit =
+</span></span><span style=display:flex><span>    <span style=color:#f0883e;font-weight:700>Either</span>.fx&lt;Error, Unit&gt; {
+</span></span><span style=display:flex><span>        <span style=color:#ff7b72>val</span> <span style=color:#f85149>(</span><span style=color:#79c0ff>user</span>) = getUser(<span style=color:#a5d6ff>1</span>)
+</span></span><span style=display:flex><span>        <span style=color:#ff7b72>val</span> <span style=color:#f85149>(</span><span style=color:#79c0ff>profile</span>) = getProfile(user)
+</span></span><span style=display:flex><span>        <span style=color:#ff7b72>val</span> <span style=color:#f85149>(</span><span style=color:#79c0ff>policies</span>) = getPolicies(profile)
+</span></span><span style=display:flex><span>        print(user, profile, policies)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    .fold(<span style=color:#ff7b72;font-weight:700>::</span>print, <span style=color:#ff7b72;font-weight:700>::</span>identity)
+</span></span></code></pre></div><p>Nice. It&rsquo;s like a kitten sleeping on top of cotton. And all the accidental complexity, coming from the possibility of error arising it&rsquo;s contained in the <code>Either</code>. Issue is, <code>fx</code> blocks encourage implicit information loss, which is one of the big benefits of functional programming. It moves you away from a <code>fetch, filter, transform, iterate</code> mindset. Also, they are not available in C# and we still need to do a final fold where the <code>right</code> side is just relaying a <code>unit</code>. The solution? Tuples:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>public</span> Unit PrintTupled() =&gt;
+</span></span><span style=display:flex><span>    GetUser(<span style=color:#a5d6ff>1</span>)
+</span></span><span style=display:flex><span>        .Bind(user =&gt; GetProfile(user).Map(profile =&gt; (user, profile)))
+</span></span><span style=display:flex><span>        .Bind(tuple =&gt; GetPolicies(tuple.Item2).Map(policies =&gt; (tuple.Item1, tuple.Item2, policies)))
+</span></span><span style=display:flex><span>        .BiFold(unit, 
+</span></span><span style=display:flex><span>            (s, tuple) =&gt; Print(tuple.Item1, tuple.Item2, tuple.Item3), 
+</span></span><span style=display:flex><span>            (s, e) =&gt; Print(e));
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-kotlin data-lang=kotlin><span style=display:flex><span><span style=color:#ff7b72>fun</span> <span style=color:#d2a8ff;font-weight:700>printTuples</span>(): Unit =
+</span></span><span style=display:flex><span>    getUser(<span style=color:#a5d6ff>1</span>)
+</span></span><span style=display:flex><span>        .flatMap { user <span style=color:#ff7b72;font-weight:700>-&gt;</span> getProfile(user).map { Tuple2(user, <span style=color:#ff7b72>it</span>) } }
+</span></span><span style=display:flex><span>        .flatMap { (user, profile) <span style=color:#ff7b72;font-weight:700>-&gt;</span> getPolicies(profile).map { Tuple3(user, profile, <span style=color:#ff7b72>it</span>) } }
+</span></span><span style=display:flex><span>        .fold(<span style=color:#ff7b72;font-weight:700>::</span>print, <span style=color:#ff7b72;font-weight:700>::</span>print)
+</span></span></code></pre></div><p>As you can see, there is a major victory here: You can mock people for not understanding you beautiful abomination.</p><p>Also, points to Kotlin for be able to use the <code>print</code> function that takes three parameters as if it were taking a tuple.</p><p>Besides that, the <code>fold</code> is actually folding this time, you are receiving two possible states and handling them instead of passing on the <code>unit</code> from the already handled one. You have a separation of the logic fetching the data and the logic actually consuming it.</p><p>Still, that tuple construction&mldr; even the Kotlin version feels, boilerplater-ish, doesn&rsquo;t it?</p><p>Well, the good thing about data structures is that almost all of the structural logic, the accidental complexity, can be abstracted await. <code>BindTuple/flatMapTuple</code> to the rescue:</p><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#ff7b72>public</span> <span style=color:#ff7b72>static</span> <span style=color:#ff7b72>class</span> <span style=color:#f0883e;font-weight:700>EitherExtensions</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>static</span> Either&lt;TL, (TR, TR2)&gt; BindTuple&lt;TL, TR, TR2&gt;(
+</span></span><span style=display:flex><span>        <span style=color:#ff7b72>this</span> Either&lt;TL, TR&gt; self,
+</span></span><span style=display:flex><span>        Func&lt;TR, Either&lt;TL, TR2&gt;&gt; func
+</span></span><span style=display:flex><span>    ) =&gt;
+</span></span><span style=display:flex><span>        self.Bind(tr =&gt; func(tr).Map(tr2 =&gt; (tr, tr2)));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>public</span> <span style=color:#ff7b72>static</span> Either&lt;TL, (TR, TR2, TR3)&gt; BindTuple&lt;TL, TR, TR2, TR3&gt;(
+</span></span><span style=display:flex><span>        <span style=color:#ff7b72>this</span> Either&lt;TL, (TR, TR2)&gt; self,
+</span></span><span style=display:flex><span>        Func&lt;(TR, TR2), Either&lt;TL, TR3&gt;&gt; func
+</span></span><span style=display:flex><span>    ) =&gt;
+</span></span><span style=display:flex><span>        self.Bind(t =&gt; func(t).Map(tr2 =&gt; (t.Item1, t.Item2, tr2)));
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>public</span> Unit PrintBindTupled() =&gt;
+</span></span><span style=display:flex><span>    GetUser(<span style=color:#a5d6ff>1</span>)
+</span></span><span style=display:flex><span>        .BindTuple(GetProfile)
+</span></span><span style=display:flex><span>        .BindTuple(tuple =&gt; GetPolicies(tuple.Item2))
+</span></span><span style=display:flex><span>        .BiFold(unit, 
+</span></span><span style=display:flex><span>            (s, tuple) =&gt; Print(tuple.Item1, tuple.Item2, tuple.Item3), 
+</span></span><span style=display:flex><span>            (s, e) =&gt; Print(e));
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-kotlin data-lang=kotlin><span style=display:flex><span><span style=color:#ff7b72>fun</span> &lt;<span style=color:#f0883e;font-weight:700>L</span>, <span style=color:#f0883e;font-weight:700>R</span>, <span style=color:#f0883e;font-weight:700>R2</span>&gt; <span style=color:#d2a8ff;font-weight:700>Either</span>&lt;L, R&gt;.flatMapTuple(
+</span></span><span style=display:flex><span>    fn: (R) <span style=color:#ff7b72;font-weight:700>-&gt;</span> Either&lt;L, R2&gt;
+</span></span><span style=display:flex><span>): Either&lt;L, Tuple2&lt;R, R2&gt;&gt; =
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>this</span>.flatMap { r <span style=color:#ff7b72;font-weight:700>-&gt;</span> fn(r).map { Tuple2(r, <span style=color:#ff7b72>it</span>) } }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8b949e;font-style:italic>// The JVM is not able to tell apart overloads when the difference in parameters are function types.
+</span></span></span><span style=display:flex><span><span style=color:#d2a8ff;font-weight:700>@JvmName</span>(<span style=color:#a5d6ff>&#34;flatMapTuple2&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#ff7b72>fun</span> &lt;<span style=color:#f0883e;font-weight:700>L</span>, <span style=color:#f0883e;font-weight:700>R</span>, <span style=color:#f0883e;font-weight:700>R2</span>, <span style=color:#f0883e;font-weight:700>R3</span>&gt; <span style=color:#d2a8ff;font-weight:700>Either</span>&lt;L, Tuple2&lt;R, R2&gt;&gt;.flatMapTuple(
+</span></span><span style=display:flex><span>    fn: (Tuple2&lt;R, R2&gt;) <span style=color:#ff7b72;font-weight:700>-&gt;</span> Either&lt;L, R3&gt;
+</span></span><span style=display:flex><span>): Either&lt;L, Tuple3&lt;R, R2, R3&gt;&gt; =
+</span></span><span style=display:flex><span>    <span style=color:#ff7b72>this</span>.flatMap { tuple <span style=color:#ff7b72;font-weight:700>-&gt;</span> fn(tuple).map { Tuple3(tuple.a, tuple.b, <span style=color:#ff7b72>it</span>) } }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff7b72>fun</span> <span style=color:#d2a8ff;font-weight:700>printFlatMapTuple</span>(): Unit =
+</span></span><span style=display:flex><span>    getUser(<span style=color:#a5d6ff>1</span>)
+</span></span><span style=display:flex><span>        .flatMapTuple(<span style=color:#ff7b72;font-weight:700>::</span>getProfile)
+</span></span><span style=display:flex><span>        .flatMapTuple { (_, profile) <span style=color:#ff7b72;font-weight:700>-&gt;</span> getPolicies(profile) }
+</span></span><span style=display:flex><span>        .fold(<span style=color:#ff7b72;font-weight:700>::</span>print, <span style=color:#ff7b72;font-weight:700>::</span>print)
+</span></span></code></pre></div><p>As you can see, this leads to code that is exclusively doing business logic: fetching, filtering, transforming and iterating. All accidental complexity is in functions that will be usable no matter the type</p><p><span>Header photo by <a href="https://unsplash.com/@derekstory?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Derek Story</a> on <a href="https://unsplash.com/s/photos/train?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span></p></article><section class=comments><div class=comments-label>⟩⟩ comments</div><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//ycabello.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></section><nav class=art-nav><a class=prev href=/plunder-with-thunder/><div class=lbl>← Previous</div><div class=ttl>Plunder with thunder</div></a><a class=next href=/efcore_many_to_many_relations/><div class=lbl>Next →</div><div class=ttl>Many-to-many relationships in Entity Framework Core 5 and 3</div></a></nav><div class=endmark>⟩⟩ end of file</div></main><footer class=site-foot><div class=inner><span class=name>Yeray Cabello</span>
+<span class=tagline>Figuring out how to outsmart myself, one dirty little trick at a time.</span><div class=fsoc><a href=https://github.com/JYCabello target=_blank rel=noopener>GitHub</a>
+<a href=https://www.linkedin.com/in/jycabello target=_blank rel=noopener>LinkedIn</a>
+<a href=/index.xml>RSS</a></div></div></footer><script>(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)})(window,document,"script","//www.google-analytics.com/analytics.js","ga"),ga("create","UA-114315531-3","auto"),ga("send","pageview")</script></body></html>
