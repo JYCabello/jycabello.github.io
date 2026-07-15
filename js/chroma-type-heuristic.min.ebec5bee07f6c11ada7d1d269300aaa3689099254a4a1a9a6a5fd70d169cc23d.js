@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".article-body .chroma code.language-lean .n").forEach(e=>{const t=(e.textContent||"").trim();/^[A-Z][A-Za-z0-9_']*$/.test(t)&&e.classList.add("n-type")})})
